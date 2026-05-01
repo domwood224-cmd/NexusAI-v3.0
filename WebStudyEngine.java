@@ -964,19 +964,20 @@ public class WebStudyEngine {
         Pattern causedPattern = Pattern.compile(
                 "(?i)([A-Z][\\w\\s]{2,25}?)\\s+(caused|leads? to|results? in|produces?)\\s+(.+?)\\.?$");
 
-        Pattern[][] allPatterns = {
-                {isPattern, new String[]{"is_a", "is_a", "is_a", "is_a"}},
-                {hasPattern, new String[]{"has_property", "has_property", "has_property", "has_property"}},
-                {canPattern, new String[]{"can_do", "can_do", "can_do", "can_do"}},
-                {causedPattern, new String[]{"caused_by", "caused_by", "caused_by", "caused_by"}}
+        Pattern[] patterns = {isPattern, hasPattern, canPattern, causedPattern};
+        String[][] predicateSets = {
+                {"is_a", "is_a", "is_a", "is_a"},
+                {"has_property", "has_property", "has_property", "has_property"},
+                {"can_do", "can_do", "can_do", "can_do"},
+                {"caused_by", "caused_by", "caused_by", "caused_by"}
         };
 
         for (String sentence : sentences) {
             String trimmed = sentence.trim();
 
-            for (Pattern[] patternEntry : allPatterns) {
-                Pattern pattern = patternEntry[0];
-                String[] predicates = patternEntry[1];
+            for (int pi = 0; pi < patterns.length; pi++) {
+                Pattern pattern = patterns[pi];
+                String[] predicates = predicateSets[pi];
                 Matcher matcher = pattern.matcher(trimmed);
 
                 if (matcher.find()) {
@@ -1103,7 +1104,7 @@ public class WebStudyEngine {
 
                 String html = fetchWebPage(searchUrl);
                 if (html != null) {
-                    List<String> discovered = discoverUrlsFromHtml(html, task.visitedUrls);
+                    List<String> discovered = discoverUrlsFromHtml(html, new HashSet<>(task.visitedUrls));
                     task.discoveredUrls.addAll(discovered);
                 }
 
@@ -1141,7 +1142,7 @@ public class WebStudyEngine {
                 totalPagesFetched++;
 
                 // Also discover new URLs from content pages
-                List<String> newUrls = discoverUrlsFromHtml(html, task.visitedUrls);
+                List<String> newUrls = discoverUrlsFromHtml(html, new HashSet<>(task.visitedUrls));
                 task.discoveredUrls.addAll(newUrls);
 
                 // Phase 2b: LEARNING
@@ -1461,3 +1462,4 @@ public class WebStudyEngine {
         }
     }
 }
+
