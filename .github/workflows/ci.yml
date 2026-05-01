@@ -20,23 +20,20 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
 
-      - name: Compile all Java sources (with Android stubs)
+      - name: Create Android desktop stubs
         run: |
-          # Create stub directory structure for Android desktop compilation
           mkdir -p stubs/android/content stubs/android/util stubs/com/nexusai/assistant/ai
 
-          # Create Context stub
-          cat > stubs/android/content/Context.java << 'STUB'
+          cat > stubs/android/content/Context.java << 'EOF'
           package android.content;
           public abstract class Context {
               public static final int MODE_PRIVATE = 0;
               public abstract SharedPreferences getSharedPreferences(String name, int mode);
               public abstract Context getApplicationContext();
           }
-          STUB
+          EOF
 
-          # Create SharedPreferences stub
-          cat > stubs/android/content/SharedPreferences.java << 'STUB'
+          cat > stubs/android/content/SharedPreferences.java << 'EOF'
           package android.content;
           public interface SharedPreferences {
               String getString(String key, String defValue);
@@ -51,35 +48,49 @@ jobs:
                   void apply();
               }
           }
-          STUB
+          EOF
 
-          # Create Log stub
-          cat > stubs/android/util/Log.java << 'STUB'
+          cat > stubs/android/util/Log.java << 'EOF'
           package android.util;
           public class Log {
-              public static int i(String tag, String msg) { System.out.println("INFO: " + tag + ": " + msg); return 0; }
-              public static int e(String tag, String msg) { System.err.println("ERROR: " + tag + ": " + msg); return 0; }
-              public static int e(String tag, String msg, Throwable tr) { System.err.println("ERROR: " + tag + ": " + msg); tr.printStackTrace(); return 0; }
-              public static int w(String tag, String msg) { System.out.println("WARN: " + tag + ": " + msg); return 0; }
+              public static int i(String tag, String msg) { System.out.println("[" + tag + "] " + msg); return 0; }
+              public static int e(String tag, String msg) { System.err.println("[" + tag + "] ERROR: " + msg); return 0; }
+              public static int e(String tag, String msg, Throwable tr) { System.err.println("[" + tag + "] ERROR: " + msg); tr.printStackTrace(); return 0; }
+              public static int w(String tag, String msg) { System.out.println("[" + tag + "] WARN: " + msg); return 0; }
               public static int d(String tag, String msg) { return 0; }
               public static int v(String tag, String msg) { return 0; }
           }
-          STUB
+          EOF
 
-          # Create AICore stub (referenced by AdvancedLearningEngine)
-          cat > stubs/com/nexusai/assistant/ai/AICore.java << 'STUB'
+          cat > stubs/com/nexusai/assistant/ai/AICore.java << 'EOF'
           package com.nexusai.assistant.ai;
           public class AICore {
               public void processResponse(String input, java.util.Map<String, Object> params) {}
           }
-          STUB
+          EOF
 
-          # Compile all sources together
+          echo "Android stubs created in stubs/"
+
+      - name: Compile all Java sources
+        run: |
           mkdir -p bin
-          find . -maxdepth 1 -name "*.java" -o -path "./stubs/*.java" -o -path "./stubs/**/*.java" | sort > sources.txt
-          javac -sourcepath ".:stubs" -d bin @sources.txt
-          echo "Compilation successful — $(cat sources.txt | wc -l) files compiled"
-          rm -f sources.txt
+
+          # Collect root Java files
+          find . -maxdepth 1 -name "*.java" -print0 > sources.txt
+
+          # Collect stub Java files (recursively)
+          find stubs/ -name "*.java" -print0 >> sources.txt
+
+          # Convert null-delimited to newline-delimited for javac @file
+          tr '\0' '\n' < sources.txt > sources_nl.txt
+
+          echo "Compiling files:"
+          cat sources_nl.txt
+          echo "---"
+
+          javac -sourcepath ".:stubs" -d bin @sources_nl.txt
+          echo "Compilation successful!"
+          rm -f sources.txt sources_nl.txt
 
       - name: Validate class output
         run: |
@@ -93,46 +104,45 @@ jobs:
       - name: Check for critical classes
         run: |
           echo "Verifying critical classes exist..."
-          for CLASS in "AdvancedLearningEngine" "TransformerAttention" "ActiveLearningSystem" "NeuralKnowledgeGraph" "TransferLearningManager" "WebStudyEngine"; do
-            if [ -f "bin/com/nexusai/assistant/ai/advanced/${CLASS}.class" ]; then
-              echo "  ✓ ${CLASS}.class found"
+          PKG="bin/com/nexusai/assistant/ai/advanced"
+          for CLASS in AdvancedLearningEngine TransformerAttention ActiveLearningSystem NeuralKnowledgeGraph TransferLearningManager WebStudyEngine; do
+            if [ -f "${PKG}/${CLASS}.class" ]; then
+              echo "  OK ${CLASS}.class"
             else
-              echo "  ✗ ${CLASS}.class MISSING"
+              echo "  FAIL ${CLASS}.class MISSING"
               exit 1
             fi
           done
 
-      - name: Verify shutdown method exists
+      - name: Verify shutdown method
         run: |
-          if javap -p bin/com/nexusai/assistant/ai/advanced/AdvancedLearningEngine.class | grep -q "shutdown"; then
-            SHUTDOWN_COUNT=$(javap -p bin/com/nexusai/assistant/ai/advanced/AdvancedLearningEngine.class | grep -c "shutdown")
-            echo "  ✓ shutdown() method found ($SHUTDOWN_COUNT occurrence(s))"
-            if [ "$SHUTDOWN_COUNT" -gt 1 ]; then
-              echo "  ⚠ WARNING: Multiple shutdown() methods detected"
-            fi
+          COUNT=$(javap -p bin/com/nexusai/assistant/ai/advanced/AdvancedLearningEngine.class 2>/dev/null | grep -c "shutdown")
+          echo "shutdown() count: $COUNT"
+          if [ "$COUNT" -eq 1 ]; then
+            echo "  OK: Exactly one shutdown() method"
           else
-            echo "  ✗ shutdown() method MISSING from AdvancedLearningEngine"
+            echo "  FAIL: Expected 1 shutdown(), got $COUNT"
             exit 1
           fi
 
-      - name: Verify scoring loops in TransferLearningManager
+      - name: Verify scoring methods in TransferLearningManager
         run: |
-          for METHOD in "calculateCulturalFit" "calculateConversationalFit" "calculateLanguageFit" "calculateEmotionalFit" "calculateReasoningFit"; do
-            if javap -p bin/com/nexusai/assistant/ai/advanced/TransferLearningManager.class | grep -q "$METHOD"; then
-              echo "  ✓ $METHOD verified"
+          for METHOD in calculateCulturalFit calculateConversationalFit calculateLanguageFit calculateEmotionalFit calculateReasoningFit; do
+            if javap -p bin/com/nexusai/assistant/ai/advanced/TransferLearningManager.class 2>/dev/null | grep -q "$METHOD"; then
+              echo "  OK $METHOD"
             else
-              echo "  ✗ $METHOD MISSING"
+              echo "  FAIL $METHOD MISSING"
               exit 1
             fi
           done
 
-      - name: Verify WebStudyEngine knowledge extraction
+      - name: Verify WebStudyEngine methods
         run: |
-          for METHOD in "extractKnowledgeFacts" "fetchWebPage" "startStudying" "addStudyTask"; do
-            if javap -p bin/com/nexusai/assistant/ai/advanced/WebStudyEngine.class | grep -q "$METHOD"; then
-              echo "  ✓ $METHOD verified"
+          for METHOD in extractKnowledgeFacts fetchWebPage startStudying addStudyTask; do
+            if javap -p bin/com/nexusai/assistant/ai/advanced/WebStudyEngine.class 2>/dev/null | grep -q "$METHOD"; then
+              echo "  OK $METHOD"
             else
-              echo "  ✗ $METHOD MISSING"
+              echo "  FAIL $METHOD MISSING"
               exit 1
             fi
           done
