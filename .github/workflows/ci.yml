@@ -20,11 +20,64 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
 
-      - name: Compile all Java sources
+      - name: Compile all Java sources (with Android stubs)
         run: |
+          # Create stub directory structure for Android desktop compilation
+          mkdir -p stubs/android/content stubs/android/util stubs/com/nexusai/assistant/ai
+
+          # Create Context stub
+          cat > stubs/android/content/Context.java << 'STUB'
+          package android.content;
+          public abstract class Context {
+              public static final int MODE_PRIVATE = 0;
+              public abstract SharedPreferences getSharedPreferences(String name, int mode);
+              public abstract Context getApplicationContext();
+          }
+          STUB
+
+          # Create SharedPreferences stub
+          cat > stubs/android/content/SharedPreferences.java << 'STUB'
+          package android.content;
+          public interface SharedPreferences {
+              String getString(String key, String defValue);
+              boolean getBoolean(String key, boolean defValue);
+              int getInt(String key, int defValue);
+              Editor edit();
+              interface Editor {
+                  Editor putString(String key, String value);
+                  Editor putBoolean(String key, boolean value);
+                  Editor putInt(String key, int value);
+                  boolean commit();
+                  void apply();
+              }
+          }
+          STUB
+
+          # Create Log stub
+          cat > stubs/android/util/Log.java << 'STUB'
+          package android.util;
+          public class Log {
+              public static int i(String tag, String msg) { System.out.println("INFO: " + tag + ": " + msg); return 0; }
+              public static int e(String tag, String msg) { System.err.println("ERROR: " + tag + ": " + msg); return 0; }
+              public static int e(String tag, String msg, Throwable tr) { System.err.println("ERROR: " + tag + ": " + msg); tr.printStackTrace(); return 0; }
+              public static int w(String tag, String msg) { System.out.println("WARN: " + tag + ": " + msg); return 0; }
+              public static int d(String tag, String msg) { return 0; }
+              public static int v(String tag, String msg) { return 0; }
+          }
+          STUB
+
+          # Create AICore stub (referenced by AdvancedLearningEngine)
+          cat > stubs/com/nexusai/assistant/ai/AICore.java << 'STUB'
+          package com.nexusai.assistant.ai;
+          public class AICore {
+              public void processResponse(String input, java.util.Map<String, Object> params) {}
+          }
+          STUB
+
+          # Compile all sources together
           mkdir -p bin
-          find . -maxdepth 1 -name "*.java" | sort > sources.txt
-          javac -d bin -sourcepath . @sources.txt
+          find . -maxdepth 1 -name "*.java" -o -path "./stubs/*.java" -o -path "./stubs/**/*.java" | sort > sources.txt
+          javac -sourcepath ".:stubs" -d bin @sources.txt
           echo "Compilation successful — $(cat sources.txt | wc -l) files compiled"
           rm -f sources.txt
 
@@ -32,16 +85,16 @@ jobs:
         run: |
           CLASS_COUNT=$(find bin -name "*.class" | wc -l)
           echo "Generated $CLASS_COUNT class files"
-          if [ "$CLASS_COUNT" -lt 5 ]; then
-            echo "ERROR: Expected at least 5 class files, got $CLASS_COUNT"
+          if [ "$CLASS_COUNT" -lt 6 ]; then
+            echo "ERROR: Expected at least 6 class files, got $CLASS_COUNT"
             exit 1
           fi
 
-      - name: Check for critical methods
+      - name: Check for critical classes
         run: |
-          echo "Verifying critical methods exist..."
-          for CLASS in "AdvancedLearningEngine" "TransformerAttention" "ActiveLearningSystem" "NeuralKnowledgeGraph" "TransferLearningManager"; do
-            if [ -f "bin/${CLASS}.class" ]; then
+          echo "Verifying critical classes exist..."
+          for CLASS in "AdvancedLearningEngine" "TransformerAttention" "ActiveLearningSystem" "NeuralKnowledgeGraph" "TransferLearningManager" "WebStudyEngine"; do
+            if [ -f "bin/com/nexusai/assistant/ai/advanced/${CLASS}.class" ]; then
               echo "  ✓ ${CLASS}.class found"
             else
               echo "  ✗ ${CLASS}.class MISSING"
@@ -51,8 +104,12 @@ jobs:
 
       - name: Verify shutdown method exists
         run: |
-          if javap -c bin/AdvancedLearningEngine.class | grep -q "shutdown"; then
-            echo "  ✓ shutdown() method verified in AdvancedLearningEngine"
+          if javap -p bin/com/nexusai/assistant/ai/advanced/AdvancedLearningEngine.class | grep -q "shutdown"; then
+            SHUTDOWN_COUNT=$(javap -p bin/com/nexusai/assistant/ai/advanced/AdvancedLearningEngine.class | grep -c "shutdown")
+            echo "  ✓ shutdown() method found ($SHUTDOWN_COUNT occurrence(s))"
+            if [ "$SHUTDOWN_COUNT" -gt 1 ]; then
+              echo "  ⚠ WARNING: Multiple shutdown() methods detected"
+            fi
           else
             echo "  ✗ shutdown() method MISSING from AdvancedLearningEngine"
             exit 1
@@ -61,7 +118,18 @@ jobs:
       - name: Verify scoring loops in TransferLearningManager
         run: |
           for METHOD in "calculateCulturalFit" "calculateConversationalFit" "calculateLanguageFit" "calculateEmotionalFit" "calculateReasoningFit"; do
-            if javap -p bin/TransferLearningManager.class | grep -q "$METHOD"; then
+            if javap -p bin/com/nexusai/assistant/ai/advanced/TransferLearningManager.class | grep -q "$METHOD"; then
+              echo "  ✓ $METHOD verified"
+            else
+              echo "  ✗ $METHOD MISSING"
+              exit 1
+            fi
+          done
+
+      - name: Verify WebStudyEngine knowledge extraction
+        run: |
+          for METHOD in "extractKnowledgeFacts" "fetchWebPage" "startStudying" "addStudyTask"; do
+            if javap -p bin/com/nexusai/assistant/ai/advanced/WebStudyEngine.class | grep -q "$METHOD"; then
               echo "  ✓ $METHOD verified"
             else
               echo "  ✗ $METHOD MISSING"
@@ -74,12 +142,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up JDK 11
-        uses: actions/setup-java@v4
-        with:
-          java-version: '11'
-          distribution: 'temurin'
 
       - name: Check for hardcoded secrets
         run: |
