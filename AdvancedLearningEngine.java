@@ -466,12 +466,7 @@ public class AdvancedLearningEngine {
         return stats;
     }
 
-    /** Gracefully shut down the engine and release resources. */
-    public void shutdown() {
-        stopLearning();
-        executorService.shutdownNow();
-        Log.i(TAG, "AdvancedLearningEngine shutdown complete");
-    }
+    // shutdown() implemented below with full resource cleanup
 
     /** Learning callback interface for external consumers. */
     public interface LearningCallback {
@@ -1713,3 +1708,4 @@ public class AdvancedLearningEngine {
         this.cosinePeriod = Math.max(1, period);
     }
 }
+
