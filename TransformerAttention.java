@@ -1160,7 +1160,6 @@ public class TransformerAttention {
 
     public void clearCache() {
         featureCache.clear();
-        cacheOrder.clear();
     }
 
     public int getModelDimension() { return modelDimension; }

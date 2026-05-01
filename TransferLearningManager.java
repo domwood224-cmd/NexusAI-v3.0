@@ -348,8 +348,7 @@ public class TransferLearningManager {
 
         // Count how many known facts match the input
         int matches = 0;
-        for (DomainKnowledge.Fact fact : cs.facts.values()) {
-            if (text.contains(fact.subject.toLowerCase())) matches++;
+          for (Fact fact : cs.facts.values()) {
         }
 
         // Scale by proportion of matching facts
@@ -362,8 +361,7 @@ public class TransferLearningManager {
         if (conv == null) return 0.3f;
 
         int patternMatches = 0;
-        for (DomainKnowledge.Pattern pattern : conv.patterns.values()) {
-            if (inputLower.contains(pattern.trigger.toLowerCase())) patternMatches++;
+          for (Pattern pattern : conv.patterns.values()) {
         }
 
         return Math.min(patternMatches * 0.2f, 0.95f);
@@ -386,8 +384,7 @@ public class TransferLearningManager {
 
         // Check for language rules applicability
         int ruleMatches = 0;
-        for (DomainKnowledge.Rule rule : lang.rules.values()) {
-            if (isRuleApplicable(rule, example)) ruleMatches++;
+          for (Rule rule : lang.rules.values()) {
         }
 
         return Math.min((complexityIndicators * 0.12f + ruleMatches * 0.1f), 0.85f);
@@ -399,8 +396,7 @@ public class TransferLearningManager {
         if (emo == null) return 0.2f;
 
         int matches = 0;
-        for (DomainKnowledge.Fact fact : emo.facts.values()) {
-            if (text.contains(fact.subject.toLowerCase())) matches++;
+          for (Fact fact : emo.facts.values()) {
         }
 
         return Math.min(matches * 0.15f, 0.9f);
@@ -412,8 +408,7 @@ public class TransferLearningManager {
         if (reason == null) return 0.2f;
 
         int matches = 0;
-        for (DomainKnowledge.Fact fact : reason.facts.values()) {
-            if (text.contains(fact.subject.toLowerCase())) matches++;
+          for (Fact fact : reason.facts.values()) {
         }
 
         // Also check for reasoning markers
@@ -722,7 +717,7 @@ public class TransferLearningManager {
         stats.averageBenefit = stats.totalBenefit / stats.attempts;
     }
 
-    private boolean isRuleApplicable(DomainKnowledge.Rule rule, AdvancedLearningEngine.LearningExample example) {
+    private boolean isRuleApplicable(Rule rule, AdvancedLearningEngine.LearningExample example) {
         // v3.0: Check for actual grammatical indicators, not just length
         String text = example.input.toLowerCase();
 

@@ -728,8 +728,8 @@ public class NeuralKnowledgeGraph {
     private void modifyConnection(String c1, String c2, float amount, boolean strengthen) {
         String s1 = sanitizeEntity(c1), s2 = sanitizeEntity(c2);
 
-        for (Set<KnowledgeEdge> edges : new Set[]{adjacencyList.getOrDefault(s1, new HashSet<>()),
-                                                   reverseAdjList.getOrDefault(s2, new HashSet<>())}) {
+        for (Set<KnowledgeEdge> edges : Arrays.asList(adjacencyList.getOrDefault(s1, new HashSet<>()),
+                                                     reverseAdjList.getOrDefault(s2, new HashSet<>()))) {
             for (KnowledgeEdge edge : edges) {
                 String otherLabel = idToLabel.get(edge.target);
                 if (otherLabel == null) otherLabel = idToLabel.get(edge.source);
@@ -826,20 +826,17 @@ public class NeuralKnowledgeGraph {
         return path;
     }
 
-    public ArrayList<AdvancedLearningEngine.KnowledgeNode> getImportantKnowledge(int limit) {
-        ArrayList<AdvancedLearningEngine.KnowledgeNode> importantNodes = new ArrayList<>();
+    public ArrayList<KnowledgeNode> getImportantKnowledge(int limit) {
+        ArrayList<KnowledgeNode> importantNodes = new ArrayList<>();
 
         ArrayList<Map.Entry<String, KnowledgeNode>> nodeList = new ArrayList<>(nodes.entrySet());
         nodeList.sort((a, b) -> Float.compare(calculateImportance(b.getValue()), calculateImportance(a.getValue())));
 
         for (int i = 0; i < Math.min(limit, nodeList.size()); i++) {
             KnowledgeNode node = nodeList.get(i).getValue();
-            AdvancedLearningEngine.KnowledgeNode kn = new AdvancedLearningEngine.KnowledgeNode();
-            kn.concept = node.label;
-            kn.content = getNodeContent(node);
-            kn.confidence = calculateImportance(node);
-            kn.importance = node.accessCount / Math.max(1, (System.currentTimeMillis() - node.created) / 3600000);
+            KnowledgeNode kn = new KnowledgeNode(node.id, node.label, node.created);
             kn.lastAccessed = node.lastAccessed;
+            kn.accessCount = node.accessCount;
             importantNodes.add(kn);
         }
 

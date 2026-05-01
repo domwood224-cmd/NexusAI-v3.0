@@ -105,7 +105,7 @@ public class AdvancedLearningEngine {
         public final float reward;
         public final String nextState;
         public final boolean done;
-        public final float tdError;
+        public float tdError;
         public float priority;
 
         public LearningExperience(String state, String action, float reward,
@@ -464,13 +464,6 @@ public class AdvancedLearningEngine {
         stats.put("curriculum_progress", (float) curriculumIterations);
         stats.put("nas_generation", (float) nasGeneration);
         return stats;
-    }
-
-    /** Gracefully shut down the engine and release resources. */
-    public void shutdown() {
-        stopLearning();
-        executorService.shutdownNow();
-        Log.i(TAG, "AdvancedLearningEngine shutdown complete");
     }
 
     /** Learning callback interface for external consumers. */
@@ -1002,8 +995,8 @@ public class AdvancedLearningEngine {
         int ffMult = parent.ffDimMult;
 
         switch ((int) (Math.random() * 4)) {
-            case 0: layers += (Math.random() < 0.5 ? -2 : 2); layers = clamp(layers, 2, 8); break;
-            case 1: heads += (Math.random() < 0.5 ? -4 : 4); heads = clamp(heads, 4, 16); break;
+            case 0: layers += (Math.random() < 0.5 ? -2 : 2); layers = (int) clamp(layers, 2, 8); break;
+            case 1: heads += (Math.random() < 0.5 ? -4 : 4); heads = (int) clamp(heads, 4, 16); break;
             case 2:
                 int[] hOpts = {256, 512, 768};
                 hidden = hOpts[(int) (Math.random() * hOpts.length)];
