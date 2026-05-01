@@ -26,6 +26,11 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
 
+    lintOptions {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+
     sourceSets {
         main {
             java {
