@@ -1,0 +1,27 @@
+# Gradle build cache
+.gradle/
+**/build/
+
+# Compiled class files
+*.class
+
+# APK / AAB
+*.apk
+*.aab
+
+# Local configuration
+local.properties
+
+# IDE files
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temp clone dirs
+NexusAI-*
