@@ -1,0 +1,100 @@
+name: NexusAI CI Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  compile-and-validate:
+    name: Compile & Validate Java Sources
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Compile all Java sources
+        run: |
+          mkdir -p bin
+          find . -maxdepth 1 -name "*.java" | sort > sources.txt
+          javac -d bin -sourcepath . @sources.txt
+          echo "Compilation successful — $(cat sources.txt | wc -l) files compiled"
+          rm -f sources.txt
+
+      - name: Validate class output
+        run: |
+          CLASS_COUNT=$(find bin -name "*.class" | wc -l)
+          echo "Generated $CLASS_COUNT class files"
+          if [ "$CLASS_COUNT" -lt 5 ]; then
+            echo "ERROR: Expected at least 5 class files, got $CLASS_COUNT"
+            exit 1
+          fi
+
+      - name: Check for critical methods
+        run: |
+          echo "Verifying critical methods exist..."
+          for CLASS in "AdvancedLearningEngine" "TransformerAttention" "ActiveLearningSystem" "NeuralKnowledgeGraph" "TransferLearningManager"; do
+            if [ -f "bin/${CLASS}.class" ]; then
+              echo "  ✓ ${CLASS}.class found"
+            else
+              echo "  ✗ ${CLASS}.class MISSING"
+              exit 1
+            fi
+          done
+
+      - name: Verify shutdown method exists
+        run: |
+          if javap -c bin/AdvancedLearningEngine.class | grep -q "shutdown"; then
+            echo "  ✓ shutdown() method verified in AdvancedLearningEngine"
+          else
+            echo "  ✗ shutdown() method MISSING from AdvancedLearningEngine"
+            exit 1
+          fi
+
+      - name: Verify scoring loops in TransferLearningManager
+        run: |
+          for METHOD in "calculateCulturalFit" "calculateConversationalFit" "calculateLanguageFit" "calculateEmotionalFit" "calculateReasoningFit"; do
+            if javap -p bin/TransferLearningManager.class | grep -q "$METHOD"; then
+              echo "  ✓ $METHOD verified"
+            else
+              echo "  ✗ $METHOD MISSING"
+              exit 1
+            fi
+          done
+
+  security-scan:
+    name: Security & Quality Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Check for hardcoded secrets
+        run: |
+          echo "Scanning for potential secrets..."
+          if rg -i "password\s*=\s*\"[^\"]+\"" --type java . 2>/dev/null; then
+            echo "WARNING: Possible hardcoded password found"
+          fi
+          if rg -i "api[_-]?key\s*=\s*\"[^\"]+\"" --type java . 2>/dev/null; then
+            echo "WARNING: Possible hardcoded API key found"
+          fi
+          echo "Secret scan complete"
+
+      - name: Source line count
+        run: |
+          LINES=$(find . -maxdepth 1 -name "*.java" -exec cat {} + | wc -l)
+          echo "Total Java source lines: $LINES"
+          FILES=$(find . -maxdepth 1 -name "*.java" | wc -l)
+          echo "Total Java files: $FILES"
