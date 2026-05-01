@@ -348,7 +348,8 @@ public class TransferLearningManager {
 
         // Count how many known facts match the input
         int matches = 0;
-          for (Fact fact : cs.facts.values()) {
+        for (Fact fact : cs.facts.values()) {
+            if (text.contains(fact.subject.toLowerCase())) matches++;
         }
 
         // Scale by proportion of matching facts
@@ -361,7 +362,8 @@ public class TransferLearningManager {
         if (conv == null) return 0.3f;
 
         int patternMatches = 0;
-          for (Pattern pattern : conv.patterns.values()) {
+        for (Pattern pattern : conv.patterns.values()) {
+            if (inputLower.contains(pattern.trigger.toLowerCase())) patternMatches++;
         }
 
         return Math.min(patternMatches * 0.2f, 0.95f);
@@ -384,7 +386,8 @@ public class TransferLearningManager {
 
         // Check for language rules applicability
         int ruleMatches = 0;
-          for (Rule rule : lang.rules.values()) {
+        for (Rule rule : lang.rules.values()) {
+            if (isRuleApplicable(rule, example)) ruleMatches++;
         }
 
         return Math.min((complexityIndicators * 0.12f + ruleMatches * 0.1f), 0.85f);
@@ -396,7 +399,8 @@ public class TransferLearningManager {
         if (emo == null) return 0.2f;
 
         int matches = 0;
-          for (Fact fact : emo.facts.values()) {
+        for (Fact fact : emo.facts.values()) {
+            if (text.contains(fact.subject.toLowerCase())) matches++;
         }
 
         return Math.min(matches * 0.15f, 0.9f);
@@ -408,7 +412,8 @@ public class TransferLearningManager {
         if (reason == null) return 0.2f;
 
         int matches = 0;
-          for (Fact fact : reason.facts.values()) {
+        for (Fact fact : reason.facts.values()) {
+            if (text.contains(fact.subject.toLowerCase())) matches++;
         }
 
         // Also check for reasoning markers

@@ -466,6 +466,13 @@ public class AdvancedLearningEngine {
         return stats;
     }
 
+    /** Gracefully shut down the engine and release resources. */
+    public void shutdown() {
+        stopLearning();
+        executorService.shutdownNow();
+        Log.i(TAG, "AdvancedLearningEngine shutdown complete");
+    }
+
     /** Learning callback interface for external consumers. */
     public interface LearningCallback {
         void onLearningComplete(String concept, float improvement);
