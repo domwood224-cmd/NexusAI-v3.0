@@ -6,6 +6,21 @@ android {
     namespace "com.nexusai.assistant"
     compileSdk 33
 
+    signingConfigs {
+        release {
+            def keystoreFile = System.getenv("RELEASE_KEYSTORE_PATH")
+            def keystorePassword = System.getenv("KEYSTORE_PASSWORD")
+            def keyAlias = System.getenv("KEY_ALIAS")
+            def keyPassword = System.getenv("KEY_PASSWORD")
+            if (keystoreFile != null) {
+                storeFile file(keystoreFile)
+                storePassword keystorePassword
+                keyAlias keyAlias
+                keyPassword keyPassword
+            }
+        }
+    }
+
     defaultConfig {
         applicationId "com.nexusai.assistant"
         minSdk 24
@@ -18,6 +33,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
