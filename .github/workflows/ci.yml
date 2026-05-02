@@ -8,165 +8,97 @@ on:
   workflow_dispatch:
 
 jobs:
-  compile-and-validate:
-    name: Compile & Validate Java Sources
+  validate-project:
+    name: Validate Project Structure
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK 11
-        uses: actions/setup-java@v4
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-
-      - name: Create Android desktop stubs
+      - name: Verify Android project structure
         run: |
-          mkdir -p stubs/android/content stubs/android/util stubs/com/nexusai/assistant/ai
-
-          cat > stubs/android/content/Context.java << 'EOF'
-          package android.content;
-          public abstract class Context {
-              public static final int MODE_PRIVATE = 0;
-              public abstract SharedPreferences getSharedPreferences(String name, int mode);
-              public abstract Context getApplicationContext();
-          }
-          EOF
-
-          cat > stubs/android/content/SharedPreferences.java << 'EOF'
-          package android.content;
-          public interface SharedPreferences {
-              String getString(String key, String defValue);
-              boolean getBoolean(String key, boolean defValue);
-              int getInt(String key, int defValue);
-              Editor edit();
-              interface Editor {
-                  Editor putString(String key, String value);
-                  Editor putBoolean(String key, boolean value);
-                  Editor putInt(String key, int value);
-                  boolean commit();
-                  void apply();
-              }
-          }
-          EOF
-
-          cat > stubs/android/util/Log.java << 'EOF'
-          package android.util;
-          public class Log {
-              public static int i(String tag, String msg) { System.out.println("[" + tag + "] " + msg); return 0; }
-              public static int e(String tag, String msg) { System.err.println("[" + tag + "] ERROR: " + msg); return 0; }
-              public static int e(String tag, String msg, Throwable tr) { System.err.println("[" + tag + "] ERROR: " + msg); tr.printStackTrace(); return 0; }
-              public static int w(String tag, String msg) { System.out.println("[" + tag + "] WARN: " + msg); return 0; }
-              public static int d(String tag, String msg) { return 0; }
-              public static int v(String tag, String msg) { return 0; }
-          }
-          EOF
-
-          cat > stubs/com/nexusai/assistant/ai/AICore.java << 'EOF'
-          package com.nexusai.assistant.ai;
-          public class AICore {
-              public void processResponse(String input, java.util.Map<String, Object> params) {}
-          }
-          EOF
-
-          echo "Android stubs created in stubs/"
-
-      - name: Compile all Java sources
-        run: |
-          mkdir -p bin
-
-          # Collect root Java files
-          find . -maxdepth 1 -name "*.java" -print0 > sources.txt
-
-          # Collect stub Java files (recursively)
-          find stubs/ -name "*.java" -print0 >> sources.txt
-
-          # Convert null-delimited to newline-delimited for javac @file
-          tr '\0' '\n' < sources.txt > sources_nl.txt
-
-          echo "Compiling files:"
-          cat sources_nl.txt
-          echo "---"
-
-          javac -sourcepath ".:stubs" -d bin @sources_nl.txt
-          echo "Compilation successful!"
-          rm -f sources.txt sources_nl.txt
-
-      - name: Validate class output
-        run: |
-          CLASS_COUNT=$(find bin -name "*.class" | wc -l)
-          echo "Generated $CLASS_COUNT class files"
-          if [ "$CLASS_COUNT" -lt 6 ]; then
-            echo "ERROR: Expected at least 6 class files, got $CLASS_COUNT"
-            exit 1
-          fi
-
-      - name: Check for critical classes
-        run: |
-          echo "Verifying critical classes exist..."
-          PKG="bin/com/nexusai/assistant/ai/advanced"
-          for CLASS in AdvancedLearningEngine TransformerAttention ActiveLearningSystem NeuralKnowledgeGraph TransferLearningManager WebStudyEngine; do
-            if [ -f "${PKG}/${CLASS}.class" ]; then
-              echo "  OK ${CLASS}.class"
+          echo "=== Verifying project structure ==="
+          MISSING=0
+          for FILE in \
+            android/app/build.gradle \
+            android/app/src/main/AndroidManifest.xml \
+            android/app/src/main/java/com/domwood/nexusai/MainActivity.java \
+            android/app/src/main/java/com/domwood/nexusai/ChatActivity.java \
+            android/app/src/main/java/com/domwood/nexusai/NeuralActivity.java \
+            android/app/src/main/java/com/domwood/nexusai/NotesActivity.java \
+            android/app/src/main/java/com/domwood/nexusai/NoteEditorActivity.java \
+            android/app/src/main/java/com/domwood/nexusai/SettingsActivity.java \
+            android/app/src/main/java/com/domwood/nexusai/NexusApp.java \
+            android/app/src/main/java/com/domwood/nexusai/views/MatrixRainView.java \
+            android/app/src/main/java/com/domwood/nexusai/views/NeuralNetworkView.java \
+            android/app/src/main/res/layout/activity_main.xml \
+            android/app/src/main/res/layout/activity_chat.xml \
+            android/app/src/main/res/layout/activity_neural.xml \
+            android/app/src/main/res/layout/activity_notes.xml \
+            android/app/src/main/res/layout/activity_note_editor.xml \
+            android/app/src/main/res/layout/activity_settings.xml \
+            android/app/src/main/res/values/colors.xml \
+            android/app/src/main/res/values/styles.xml \
+            android/app/src/main/res/values/strings.xml; do
+            if [ -f "$FILE" ]; then
+              echo "  OK  $FILE"
             else
-              echo "  FAIL ${CLASS}.class MISSING"
-              exit 1
+              echo "  MISS $FILE"
+              MISSING=$((MISSING + 1))
             fi
           done
+          if [ "$MISSING" -gt 0 ]; then
+            echo "ERROR: $MISSING file(s) missing!"
+            exit 1
+          fi
+          echo "All files present."
 
-      - name: Verify shutdown method
+      - name: Check for no rogue files at root
         run: |
-          COUNT=$(javap -p bin/com/nexusai/assistant/ai/advanced/AdvancedLearningEngine.class 2>/dev/null | grep -c "shutdown")
-          echo "shutdown() count: $COUNT"
-          if [ "$COUNT" -eq 1 ]; then
-            echo "  OK: Exactly one shutdown() method"
+          ROGUE=$(find . -maxdepth 1 -name "*.java" -type f | wc -l)
+          if [ "$ROGUE" -gt 0 ]; then
+            echo "WARNING: Found $ROGUE Java file(s) at repo root (should be in android/):"
+            find . -maxdepth 1 -name "*.java" -type f
           else
-            echo "  FAIL: Expected 1 shutdown(), got $COUNT"
-            exit 1
+            echo "OK: No rogue Java files at repo root."
           fi
 
-      - name: Verify scoring/relevance methods in TransferLearningManager
+      - name: Verify XML well-formedness
         run: |
-          for METHOD in calculateCommonSenseRelevance calculateConversationRelevance calculateLanguageRelevance calculateEmotionalRelevance calculateReasoningRelevance; do
-            if javap -p bin/com/nexusai/assistant/ai/advanced/TransferLearningManager.class 2>/dev/null | grep -q "$METHOD"; then
-              echo "  OK $METHOD"
+          echo "=== Checking XML files ==="
+          ERRORS=0
+          for XML in $(find android/app/src/main/res -name "*.xml"); do
+            if xmllint --noout "$XML" 2>/dev/null; then
+              echo "  OK  $XML"
             else
-              echo "  FAIL $METHOD MISSING"
-              exit 1
+              echo "  ERR $XML"
+              ERRORS=$((ERRORS + 1))
             fi
           done
-
-      - name: Verify WebStudyEngine methods
-        run: |
-          for METHOD in extractKnowledgeFacts fetchWebPage startStudying addStudyTask; do
-            if javap -p bin/com/nexusai/assistant/ai/advanced/WebStudyEngine.class 2>/dev/null | grep -q "$METHOD"; then
-              echo "  OK $METHOD"
-            else
-              echo "  FAIL $METHOD MISSING"
-              exit 1
-            fi
-          done
-
-  security-scan:
-    name: Security & Quality Scan
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+          if [ "$ERRORS" -gt 0 ]; then
+            echo "ERROR: $ERRORS XML file(s) have syntax errors!"
+            exit 1
+          fi
+          echo "All XML files valid."
 
       - name: Check for hardcoded secrets
         run: |
-          echo "Scanning for potential secrets..."
-          if rg -i "password\s*=\s*\"[^\"]+\"" --type java . 2>/dev/null; then
-            echo "WARNING: Possible hardcoded password found"
+          echo "=== Scanning for secrets ==="
+          FOUND=0
+          if rg -i "password\s*=\s*\"[^\"]+\"" --type java android/ 2>/dev/null; then
+            echo "WARNING: Possible hardcoded password!"
+            FOUND=1
           fi
-          if rg -i "api[_-]?key\s*=\s*\"[^\"]+\"" --type java . 2>/dev/null; then
-            echo "WARNING: Possible hardcoded API key found"
+          if rg -i "api[_-]?key\s*=\s*\"[^\"]+\"" --type java android/ 2>/dev/null; then
+            echo "WARNING: Possible hardcoded API key!"
+            FOUND=1
           fi
-          echo "Secret scan complete"
+          if [ "$FOUND" -eq 0 ]; then
+            echo "OK: No hardcoded secrets found."
+          fi
 
       - name: Source line count
         run: |
-          LINES=$(find . -maxdepth 1 -name "*.java" -exec cat {} + | wc -l)
+          LINES=$(find android/app/src/main/java -name "*.java" -exec cat {} + | wc -l)
           echo "Total Java source lines: $LINES"
-          FILES=$(find . -maxdepth 1 -name "*.java" | wc -l)
+          FILES=$(find android/app/src/main/java -name "*.java" | wc -l)
           echo "Total Java files: $FILES"

@@ -72,7 +72,9 @@ public class ChatActivity extends AppCompatActivity {
                 recyclerView.setLayoutManager(new LinearLayoutManager(this));
                 adapter = new MessageAdapter(loadMessages());
                 recyclerView.setAdapter(adapter);
-                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+                if (adapter.getItemCount() > 0) {
+                    recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+                }
             }
 
             if (chatSendBtn != null) {
@@ -116,7 +118,9 @@ public class ChatActivity extends AppCompatActivity {
 
         String time = new SimpleDateFormat("HH:mm:ss", Locale.US).format(new Date());
         adapter.addMessage(new ChatMessage("USER", text, "user", time));
-        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+        if (recyclerView != null) {
+            recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+        }
 
         if (prefs == null) {
             showSystemError("Settings not loaded. Restart the app.");
