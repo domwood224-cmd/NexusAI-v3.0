@@ -64,6 +64,7 @@ jobs:
 
       - name: Verify XML well-formedness
         run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq libxml2-utils 2>/dev/null
           echo "=== Checking XML files ==="
           ERRORS=0
           for XML in $(find android/app/src/main/res -name "*.xml"); do
