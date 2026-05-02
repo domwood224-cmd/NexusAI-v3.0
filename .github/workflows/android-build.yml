@@ -141,3 +141,27 @@ jobs:
           name: NexusAI-Release-APK
           path: android/app/build/outputs/apk/release/*.apk
           retention-days: 30
+
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          APK=$(find android/app/build/outputs/apk/release/ -name "*.apk" 2>/dev/null | head -1)
+          APK_NAME=$(basename "$APK")
+          TAG="v5.2.0"
+          gh release delete "$TAG" 2>/dev/null || true
+          gh release create "$TAG" "$APK" \
+            --title "NexusAI v5.2.0" \
+            --notes "NexusAI v5.2.0 - Manifest fix + stability improvements
+
+          Changes:
+          - Fixed AndroidManifest activity name mismatches
+          - Fixed XML resource inflation crashes
+          - Fixed circular style references
+          - Fixed foreground attribute conflicts
+          - Hardened custom views (MatrixRain, NeuralNetwork)
+          - Global crash handler with device diagnostics
+          - All 5 screens: Dashboard, AI Chat, Neural Network, Data Logs, Settings
+
+          Install: Download the APK below and install on your Android device." \
+            --prerelease 2>&1 || echo "Release creation had issues, APK is still available as artifact"
