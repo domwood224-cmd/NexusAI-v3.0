@@ -1,7 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.NexusAI" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:windowBackground">@android:color/white</item>
-        <item name="android:windowMinWidthMajor">320dp</item>
-        <item name="android:windowMinWidthMinor">320dp</item>
+    <style name="Theme.NexusAI" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_variant</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="android:statusBarColor">@color/bg_dark</item>
+        <item name="android:windowBackground">@color/bg_dark</item>
+        <item name="android:navigationBarColor">@color/bg_dark</item>
+        <item name="textColorPrimary">@color/text_primary</item>
+        <item name="textColorSecondary">@color/text_secondary</item>
+    </style>
+
+    <style name="FeatureCard" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">4dp</item>
+        <item name="cardBackgroundColor">@color/bg_card</item>
+        <item name="contentPadding">20dp</item>
+    </style>
+
+    <style name="FeatureCardTitle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="FeatureCardDesc">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:layout_marginTop">4dp</item>
+    </style>
+
+    <style name="SectionTitle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/primary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.1</item>
     </style>
 </resources>
