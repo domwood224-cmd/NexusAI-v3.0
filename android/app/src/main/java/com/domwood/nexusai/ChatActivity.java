@@ -43,7 +43,7 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        getSupportActionBar().hide();
+        if (getSupportActionBar() != null) getSupportActionBar().hide();
 
         prefs = getSharedPreferences("nexusai_settings", Context.MODE_PRIVATE);
         recyclerView = findViewById(R.id.chatRecyclerView);
@@ -121,7 +121,8 @@ public class ChatActivity extends AppCompatActivity {
                 if (code >= 200 && code < 300) {
                     reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 } else {
-                    reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+                    java.io.InputStream errStream = conn.getErrorStream();
+                    reader = new BufferedReader(new InputStreamReader(errStream != null ? errStream : conn.getInputStream()));
                 }
                 StringBuilder response = new StringBuilder();
                 String line;
@@ -134,7 +135,7 @@ public class ChatActivity extends AppCompatActivity {
                     JSONObject respJson = new JSONObject(respStr);
                     aiText = respJson.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
                 } else {
-                    aiText = "[ERROR " + code + "] " + respStr.substring(0, Math.min(respStr.length(), 300));
+                    aiText = "[ERROR " + code + "] " + (respStr.length() > 300 ? respStr.substring(0, 300) : respStr);
                 }
 
                 String t = new SimpleDateFormat("HH:mm:ss", Locale.US).format(new Date());

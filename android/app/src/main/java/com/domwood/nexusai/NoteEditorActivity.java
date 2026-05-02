@@ -24,7 +24,7 @@ public class NoteEditorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_editor);
-        getSupportActionBar().hide();
+        if (getSupportActionBar() != null) getSupportActionBar().hide();
 
         notePrefs = getSharedPreferences("nexusai_notes", Context.MODE_PRIVATE);
         noteId = getIntent().getIntExtra("id", -1);

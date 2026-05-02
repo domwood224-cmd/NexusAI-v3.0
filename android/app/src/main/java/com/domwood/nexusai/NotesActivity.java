@@ -33,7 +33,7 @@ public class NotesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes);
-        getSupportActionBar().hide();
+        if (getSupportActionBar() != null) getSupportActionBar().hide();
 
         notePrefs = getSharedPreferences("nexusai_notes", Context.MODE_PRIVATE);
         recyclerView = findViewById(R.id.notesRecyclerView);
