@@ -17,7 +17,7 @@
     <color name="bg_card">#0D1A0D</color>
     <color name="bg_card_hover">#142814</color>
     <color name="bg_input">#0A120A</color>
-    <color name="border_green">#00FF4133</color>
+    <color name="border_green">#1A003300</color>
     <color name="text_primary">#00FF41</color>
     <color name="text_secondary">#00CC33</color>
     <color name="text_hint">#006600</color>

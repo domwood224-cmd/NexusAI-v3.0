@@ -28,8 +28,8 @@
                     app:cardCornerRadius="12dp" app:cardElevation="0dp"
                     app:cardBackgroundColor="@color/bg_card"
                     app:strokeColor="@color/border_green" app:strokeWidth="1dp"
-                    android:clickable="true" android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
+                    app:rippleColor="#4400FF41"
+                    android:clickable="true" android:focusable="true">
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
                         android:gravity="center_vertical" android:padding="16dp">
                         <TextView android:layout_width="40dp" android:layout_height="40dp" android:text=">_"
@@ -50,8 +50,8 @@
                     app:cardCornerRadius="12dp" app:cardElevation="0dp"
                     app:cardBackgroundColor="@color/bg_card"
                     app:strokeColor="@color/border_green" app:strokeWidth="1dp"
-                    android:clickable="true" android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
+                    app:rippleColor="#4400FF41"
+                    android:clickable="true" android:focusable="true">
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
                         android:gravity="center_vertical" android:padding="16dp">
                         <TextView android:layout_width="40dp" android:layout_height="40dp" android:text="(*)"
@@ -72,8 +72,8 @@
                     app:cardCornerRadius="12dp" app:cardElevation="0dp"
                     app:cardBackgroundColor="@color/bg_card"
                     app:strokeColor="@color/border_green" app:strokeWidth="1dp"
-                    android:clickable="true" android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
+                    app:rippleColor="#4400FF41"
+                    android:clickable="true" android:focusable="true">
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
                         android:gravity="center_vertical" android:padding="16dp">
                         <TextView android:layout_width="40dp" android:layout_height="40dp" android:text="[ ]"
@@ -94,8 +94,8 @@
                     app:cardCornerRadius="12dp" app:cardElevation="0dp"
                     app:cardBackgroundColor="@color/bg_card"
                     app:strokeColor="@color/border_green" app:strokeWidth="1dp"
-                    android:clickable="true" android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
+                    app:rippleColor="#4400FF41"
+                    android:clickable="true" android:focusable="true">
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
                         android:gravity="center_vertical" android:padding="16dp">
                         <TextView android:layout_width="40dp" android:layout_height="40dp" android:text="##"

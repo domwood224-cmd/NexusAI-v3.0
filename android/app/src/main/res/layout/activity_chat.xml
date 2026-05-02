@@ -8,7 +8,7 @@
             android:text="&lt; BACK" android:textSize="14sp" android:textColor="@color/matrix_green"
             android:fontFamily="monospace" android:paddingEnd="16dp"/>
         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-            android:text="> NEURAL CHAT" android:textSize="18sp" android:textColor="@color/matrix_green"
+            android:text="&gt; NEURAL CHAT" android:textSize="18sp" android:textColor="@color/matrix_green"
             android:fontFamily="monospace" android:textStyle="bold"/>
         <TextView android:id="@+id/chatStatus" android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="[ONLINE]" android:textSize="10sp" android:textColor="@color/matrix_green_dim" android:fontFamily="monospace"/>
