@@ -2,16 +2,23 @@ plugins {
     id 'com.android.application'
 }
 
+def keystorePath = System.getenv("RELEASE_KEYSTORE_PATH")
+def keystorePass = System.getenv("KEYSTORE_PASSWORD")
+def keyAliasVal = System.getenv("KEY_ALIAS")
+def keyPass = System.getenv("KEY_PASSWORD")
+
 android {
     namespace "com.nexusai.assistant"
     compileSdk 33
 
     signingConfigs {
-        release {
-            storeFile file(System.getenv("RELEASE_KEYSTORE_PATH"))
-            storePassword System.getenv("KEYSTORE_PASSWORD")
-            keyAlias System.getenv("KEY_ALIAS")
-            keyPassword System.getenv("KEY_PASSWORD")
+        if (keystorePath != null) {
+            release {
+                storeFile file(keystorePath)
+                storePassword keystorePass
+                keyAlias keyAliasVal
+                keyPassword keyPass
+            }
         }
     }
 
@@ -27,7 +34,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            if (keystorePath != null) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 
