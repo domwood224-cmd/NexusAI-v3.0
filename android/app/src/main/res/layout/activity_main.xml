@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/black">
     <com.domwood.nexusai.views.MatrixRainView android:id="@+id/matrixRain"
         android:layout_width="match_parent" android:layout_height="match_parent"/>
@@ -10,7 +11,7 @@
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="NEXUS AI"
                     android:textSize="36sp" android:textColor="@color/matrix_green" android:fontFamily="monospace" android:textStyle="bold"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="[ BIOHAZARD PROTOCOL v3.1 ]" android:textSize="12sp" android:textColor="@color/biohazard_red"
+                    android:text="[ BIOHAZARD PROTOCOL v4.0 ]" android:textSize="12sp" android:textColor="@color/biohazard_red"
                     android:fontFamily="monospace" android:letterSpacing="0.2" android:layout_marginTop="8dp"/>
                 <TextView android:id="@+id/systemStatus" android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="> SYSTEM ONLINE" android:textSize="10sp" android:textColor="@color/matrix_green_dim"
@@ -21,12 +22,17 @@
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="-- CORE MODULES --"
                     android:textSize="11sp" android:textColor="@color/biohazard_red" android:fontFamily="monospace"
                     android:textStyle="bold" android:letterSpacing="0.2" android:layout_marginBottom="12dp"/>
+
                 <androidx.cardview.widget.CardView android:id="@+id/cardChat" android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:layout_marginBottom="12dp" android:foreground="?attr/selectableItemBackground">
+                    android:layout_height="wrap_content" android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="12dp" app:cardElevation="0dp"
+                    app:cardBackgroundColor="@color/bg_card"
+                    app:strokeColor="@color/border_green" app:strokeWidth="1dp"
+                    android:foreground="?attr/selectableItemBackground">
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
                         android:gravity="center_vertical" android:padding="16dp">
-                        <TextView android:layout_width="40dp" android:layout_height="40dp" android:text=">_" android:textSize="20sp"
-                            android:textColor="@color/matrix_green" android:fontFamily="monospace" android:gravity="center"/>
+                        <TextView android:layout_width="40dp" android:layout_height="40dp" android:text=">_"
+                            android:textSize="20sp" android:textColor="@color/matrix_green" android:fontFamily="monospace" android:gravity="center"/>
                         <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
                             android:orientation="vertical" android:layout_marginStart="16dp">
                             <TextView android:text="AI Chat" android:textSize="16sp" android:textColor="@color/matrix_green"
@@ -37,8 +43,13 @@
                         <TextView android:text=">" android:textColor="@color/matrix_green" android:textSize="18sp" android:fontFamily="monospace"/>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
                 <androidx.cardview.widget.CardView android:id="@+id/cardNeural" android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:layout_marginBottom="12dp" android:foreground="?attr/selectableItemBackground">
+                    android:layout_height="wrap_content" android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="12dp" app:cardElevation="0dp"
+                    app:cardBackgroundColor="@color/bg_card"
+                    app:strokeColor="@color/border_green" app:strokeWidth="1dp"
+                    android:foreground="?attr/selectableItemBackground">
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
                         android:gravity="center_vertical" android:padding="16dp">
                         <TextView android:layout_width="40dp" android:layout_height="40dp" android:text="(*)"
@@ -53,8 +64,13 @@
                         <TextView android:text=">" android:textColor="@color/matrix_green" android:textSize="18sp" android:fontFamily="monospace"/>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
                 <androidx.cardview.widget.CardView android:id="@+id/cardNotes" android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:layout_marginBottom="12dp" android:foreground="?attr/selectableItemBackground">
+                    android:layout_height="wrap_content" android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="12dp" app:cardElevation="0dp"
+                    app:cardBackgroundColor="@color/bg_card"
+                    app:strokeColor="@color/border_green" app:strokeWidth="1dp"
+                    android:foreground="?attr/selectableItemBackground">
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
                         android:gravity="center_vertical" android:padding="16dp">
                         <TextView android:layout_width="40dp" android:layout_height="40dp" android:text="[ ]"
@@ -69,8 +85,13 @@
                         <TextView android:text=">" android:textColor="@color/matrix_green" android:textSize="18sp" android:fontFamily="monospace"/>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
                 <androidx.cardview.widget.CardView android:id="@+id/cardSettings" android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:layout_marginBottom="12dp" android:foreground="?attr/selectableItemBackground">
+                    android:layout_height="wrap_content" android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="12dp" app:cardElevation="0dp"
+                    app:cardBackgroundColor="@color/bg_card"
+                    app:strokeColor="@color/border_green" app:strokeWidth="1dp"
+                    android:foreground="?attr/selectableItemBackground">
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
                         android:gravity="center_vertical" android:padding="16dp">
                         <TextView android:layout_width="40dp" android:layout_height="40dp" android:text="##"
@@ -85,6 +106,7 @@
                         <TextView android:text=">" android:textColor="@color/matrix_green" android:textSize="18sp" android:fontFamily="monospace"/>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider"/>
                 <TextView android:id="@+id/systemInfo" android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:textSize="10sp" android:textColor="@color/text_hint" android:fontFamily="monospace"

@@ -1,21 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
+        android:name=".NexusApp"
         android:allowBackup="true"
         android:label="@string/app_name"
         android:theme="@style/Theme.NexusAI"
         android:usesCleartextTraffic="true">
-        <activity android:name=".MainActivity" android:exported="true">
+        <activity android:name=".MainActivity" android:exported="true"
+            android:configChanges="orientation|screenSize|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ChatActivity" android:exported="false" android:parentActivityName=".MainActivity"/>
-        <activity android:name=".NeuralActivity" android:exported="false" android:parentActivityName=".MainActivity"/>
-        <activity android:name=".NotesActivity" android:exported="false" android:parentActivityName=".MainActivity"/>
-        <activity android:name=".NoteEditorActivity" android:exported="false" android:parentActivityName=".NotesActivity"/>
-        <activity android:name=".SettingsActivity" android:exported="false" android:parentActivityName=".MainActivity"/>
+        <activity android:name=".ChatActivity" android:exported="false"
+            android:parentActivityName=".MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
+        <activity android:name=".NeuralActivity" android:exported="false"
+            android:parentActivityName=".MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
+        <activity android:name=".NotesActivity" android:exported="false"
+            android:parentActivityName=".MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
+        <activity android:name=".NoteEditorActivity" android:exported="false"
+            android:parentActivityName=".NotesActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
+        <activity android:name=".SettingsActivity" android:exported="false"
+            android:parentActivityName=".MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
     </application>
 </manifest>

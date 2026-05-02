@@ -4,9 +4,13 @@
     <com.domwood.nexusai.views.MatrixRainView android:id="@+id/neuralRain"
         android:layout_width="match_parent" android:layout_height="match_parent"/>
     <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical">
+        <!-- Header with back button -->
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"
             android:padding="16dp" android:background="#AA000000">
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                <TextView android:id="@+id/neuralBackBtn" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="&lt; BACK" android:textSize="14sp" android:textColor="@color/matrix_green"
+                    android:fontFamily="monospace" android:paddingEnd="16dp"/>
                 <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
                     android:text="(*) NEURAL NETWORK" android:textSize="18sp" android:textColor="@color/matrix_green"
                     android:fontFamily="monospace" android:textStyle="bold"/>
@@ -15,6 +19,7 @@
             <TextView android:text="KNOWLEDGE GRAPH TOPOLOGY" android:textSize="10sp" android:textColor="@color/text_hint"
                 android:fontFamily="monospace" android:letterSpacing="0.15" android:layout_marginTop="4dp"/>
         </LinearLayout>
+        <!-- Stats bar -->
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
             android:padding="12dp" android:background="#88000000">
             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
@@ -38,8 +43,10 @@
                 <TextView android:text="LAYERS" android:textSize="9sp" android:textColor="@color/text_hint" android:fontFamily="monospace"/>
             </LinearLayout>
         </LinearLayout>
+        <!-- Neural canvas -->
         <com.domwood.nexusai.views.NeuralNetworkView android:id="@+id/neuralCanvas"
             android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"/>
+        <!-- Activity bar -->
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp"
             android:background="#AA000000" android:orientation="vertical">
             <TextView android:text="ACTIVITY LEVEL" android:textSize="9sp" android:textColor="@color/text_hint"

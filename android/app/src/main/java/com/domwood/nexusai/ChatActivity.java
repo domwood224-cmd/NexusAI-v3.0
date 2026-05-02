@@ -3,13 +3,17 @@ package com.domwood.nexusai;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,10 +23,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,39 +38,64 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ChatActivity extends AppCompatActivity {
+    private static final String TAG = "NexusAI.Chat";
+    private static final int MAX_HISTORY_MESSAGES = 30;
+
     private RecyclerView recyclerView;
     private MessageAdapter adapter;
     private EditText chatInput;
     private Button chatSendBtn;
     private SharedPreferences prefs;
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
+    private ExecutorService executor;
+    private boolean isSending = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
-        if (getSupportActionBar() != null) getSupportActionBar().hide();
+        try {
+            setContentView(R.layout.activity_chat);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to inflate chat layout", e);
+            finish();
+            return;
+        }
 
         prefs = getSharedPreferences("nexusai_settings", Context.MODE_PRIVATE);
-        recyclerView = findViewById(R.id.chatRecyclerView);
-        chatInput = findViewById(R.id.chatInput);
-        chatSendBtn = findViewById(R.id.chatSendBtn);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new MessageAdapter(loadMessages());
-        recyclerView.setAdapter(adapter);
-        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+        try {
+            recyclerView = findViewById(R.id.chatRecyclerView);
+            chatInput = findViewById(R.id.chatInput);
+            chatSendBtn = findViewById(R.id.chatSendBtn);
 
-        chatSendBtn.setOnClickListener(v -> sendMessage());
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            adapter = new MessageAdapter(loadMessages());
+            recyclerView.setAdapter(adapter);
+            recyclerView.scrollToPosition(adapter.getItemCount() - 1);
 
-        if (adapter.getItemCount() == 0) {
-            adapter.addMessage(new ChatMessage("SYSTEM",
-                "NEXUS AI NEURAL INTERFACE v3.1\n[SYSTEM ONLINE]\n\nConfigure API endpoint in System Config\nto initialize neural link.",
-                "ai"));
+            chatSendBtn.setOnClickListener(v -> sendMessage());
+
+            // Enter key sends message
+            chatInput.setOnEditorActionListener((v, actionId, event) -> {
+                if (actionId == EditorInfo.IME_ACTION_SEND ||
+                    (event != null && event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                    sendMessage();
+                    return true;
+                }
+                return false;
+            });
+
+            if (adapter.getItemCount() == 0) {
+                adapter.addMessage(new ChatMessage("SYSTEM",
+                    "NEXUS AI NEURAL INTERFACE v4.0\n[SYSTEM ONLINE]\n\nConfigure API endpoint in System Config\nto initialize neural link.",
+                    "ai"));
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to setup chat", e);
         }
     }
 
     private void sendMessage() {
+        if (isSending) return;
         String text = chatInput.getText().toString().trim();
         if (text.isEmpty()) return;
         chatInput.setText("");
@@ -79,12 +110,17 @@ public class ChatActivity extends AppCompatActivity {
         if (apiUrl.isEmpty() || apiKey.isEmpty()) {
             String t = new SimpleDateFormat("HH:mm:ss", Locale.US).format(new Date());
             adapter.addMessage(new ChatMessage("SYSTEM",
-                "[ERROR] API endpoint not configured.\nNavigate to System Config.", "ai", t));
+                "[ERROR] API endpoint not configured.\nNavigate to System Config to set your API URL and Key.",
+                "ai", t));
             recyclerView.scrollToPosition(adapter.getItemCount() - 1);
             saveMessages();
             return;
         }
 
+        isSending = true;
+        chatSendBtn.setEnabled(false);
+        chatSendBtn.setText("...");
+        executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             try {
                 JSONObject body = new JSONObject();
@@ -96,8 +132,14 @@ public class ChatActivity extends AppCompatActivity {
                     messages.put(new JSONObject().put("role", "system").put("content", sysPrompt));
                 }
 
-                for (ChatMessage msg : adapter.getMessages()) {
-                    String role = msg.type.equals("user") ? "user" : "assistant";
+                // Send only the last MAX_HISTORY_MESSAGES to avoid token limits
+                List<ChatMessage> allMsgs = adapter.getMessages();
+                int startIdx = Math.max(0, allMsgs.size() - MAX_HISTORY_MESSAGES);
+                for (int i = startIdx; i < allMsgs.size(); i++) {
+                    ChatMessage msg = allMsgs.get(i);
+                    // Skip SYSTEM type messages in API payload
+                    if ("SYSTEM".equals(msg.sender)) continue;
+                    String role = "user".equals(msg.type) ? "user" : "assistant";
                     messages.put(new JSONObject().put("role", role).put("content", msg.text));
                 }
                 body.put("messages", messages);
@@ -112,17 +154,18 @@ public class ChatActivity extends AppCompatActivity {
                 conn.setDoOutput(true);
 
                 try (OutputStream os = conn.getOutputStream()) {
-                    os.write(body.toString().getBytes());
+                    os.write(body.toString().getBytes(StandardCharsets.UTF_8));
                     os.flush();
                 }
 
                 int code = conn.getResponseCode();
                 BufferedReader reader;
                 if (code >= 200 && code < 300) {
-                    reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
                 } else {
-                    java.io.InputStream errStream = conn.getErrorStream();
-                    reader = new BufferedReader(new InputStreamReader(errStream != null ? errStream : conn.getInputStream()));
+                    InputStream errStream = conn.getErrorStream();
+                    reader = new BufferedReader(new InputStreamReader(
+                        errStream != null ? errStream : conn.getInputStream(), StandardCharsets.UTF_8));
                 }
                 StringBuilder response = new StringBuilder();
                 String line;
@@ -132,10 +175,21 @@ public class ChatActivity extends AppCompatActivity {
                 String respStr = response.toString();
                 String aiText;
                 if (code >= 200 && code < 300) {
-                    JSONObject respJson = new JSONObject(respStr);
-                    aiText = respJson.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
+                    try {
+                        JSONObject respJson = new JSONObject(respStr);
+                        JSONArray choices = respJson.getJSONArray("choices");
+                        if (choices.length() > 0) {
+                            aiText = choices.getJSONObject(0).getJSONObject("message").getString("content");
+                        } else {
+                            aiText = "[WARNING] Empty response from API.";
+                        }
+                    } catch (Exception parseErr) {
+                        aiText = "[PARSE ERROR] Could not read API response.";
+                        Log.w(TAG, "Parse error", parseErr);
+                    }
                 } else {
-                    aiText = "[ERROR " + code + "] " + (respStr.length() > 300 ? respStr.substring(0, 300) : respStr);
+                    String errBody = respStr.length() > 300 ? respStr.substring(0, 300) : respStr;
+                    aiText = "[ERROR " + code + "] " + errBody;
                 }
 
                 String t = new SimpleDateFormat("HH:mm:ss", Locale.US).format(new Date());
@@ -145,12 +199,20 @@ public class ChatActivity extends AppCompatActivity {
                     saveMessages();
                 });
             } catch (Exception e) {
+                Log.e(TAG, "Chat request failed", e);
                 String t = new SimpleDateFormat("HH:mm:ss", Locale.US).format(new Date());
-                String errText = "[CONNECTION FAILED]\n" + e.getMessage();
+                String errText = "[CONNECTION FAILED]\n" + (e.getMessage() != null ? e.getMessage() : "Unknown error");
                 runOnUiThread(() -> {
                     adapter.addMessage(new ChatMessage("SYSTEM", errText, "ai", t));
                     recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                     saveMessages();
+                });
+            } finally {
+                runOnUiThread(() -> {
+                    isSending = false;
+                    chatSendBtn.setEnabled(true);
+                    chatSendBtn.setText(">");
+                    if (executor != null) executor.shutdownNow();
                 });
             }
         });
@@ -164,9 +226,15 @@ public class ChatActivity extends AppCompatActivity {
             JSONArray arr = new JSONArray(json);
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject obj = arr.getJSONObject(i);
-                msgs.add(new ChatMessage(obj.getString("sender"), obj.getString("text"), obj.getString("type"), obj.optString("time", "")));
+                msgs.add(new ChatMessage(
+                    obj.optString("sender", "SYSTEM"),
+                    obj.optString("text", ""),
+                    obj.optString("type", "ai"),
+                    obj.optString("time", "")));
             }
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to load messages", e);
+        }
         return msgs;
     }
 
@@ -183,51 +251,67 @@ public class ChatActivity extends AppCompatActivity {
                 arr.put(obj);
             }
             chatPrefs.edit().putString("messages", arr.toString()).apply();
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to save messages", e);
+        }
     }
 
     static class ChatMessage {
         String sender, text, type, time;
         ChatMessage(String sender, String text, String type) { this(sender, text, type, ""); }
-        ChatMessage(String sender, String text, String type, String time) { this.sender = sender; this.text = text; this.type = type; this.time = time; }
+        ChatMessage(String sender, String text, String type, String time) {
+            this.sender = sender; this.text = text; this.type = type; this.time = time;
+        }
     }
 
     class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
-        private List<ChatMessage> messages = new ArrayList<>();
+        private final List<ChatMessage> messages = new ArrayList<>();
 
         MessageAdapter(List<ChatMessage> msgs) { messages.addAll(msgs); }
         List<ChatMessage> getMessages() { return messages; }
-        void addMessage(ChatMessage m) { messages.add(m); notifyItemInserted(messages.size() - 1); }
+        void addMessage(ChatMessage m) {
+            messages.add(m);
+            notifyItemInserted(messages.size() - 1);
+        }
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_message, parent, false);
+            View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_chat_message, parent, false);
             return new ViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            ChatMessage msg = messages.get(position);
-            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) holder.bubble.getLayoutParams();
+            try {
+                ChatMessage msg = messages.get(position);
+                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) holder.bubble.getLayoutParams();
 
-            if (msg.type.equals("user")) {
-                lp.gravity = android.view.Gravity.END;
-                holder.bubble.setBackgroundResource(R.drawable.bg_user_bubble);
-                holder.sender.setTextColor(0xFF00FF41);
-                holder.sender.setText(msg.sender);
-                holder.text.setTextColor(0xFF00FF41);
-            } else {
-                lp.gravity = android.view.Gravity.START;
-                holder.bubble.setBackgroundResource(R.drawable.bg_ai_bubble);
-                holder.sender.setTextColor(0xFFFF6D00);
-                holder.sender.setText(msg.sender);
-                holder.text.setTextColor(0xFFFF6D00);
-            }
-            holder.bubble.setLayoutParams(lp);
-            holder.text.setText(msg.text);
-            if (msg.time != null && !msg.time.isEmpty()) {
-                holder.time.setTextColor(0xFF006600);
-                holder.time.setText(msg.time);
+                if ("user".equals(msg.type)) {
+                    lp.gravity = android.view.Gravity.END;
+                    holder.bubble.setBackgroundResource(R.drawable.bg_user_bubble);
+                    holder.sender.setTextColor(0xFF00FF41);
+                    holder.sender.setText(msg.sender);
+                    holder.text.setTextColor(0xFF00FF41);
+                } else {
+                    lp.gravity = android.view.Gravity.START;
+                    holder.bubble.setBackgroundResource(R.drawable.bg_ai_bubble);
+                    holder.sender.setTextColor(0xFFFF6D00);
+                    holder.sender.setText(msg.sender);
+                    holder.text.setTextColor(0xFFFF6D00);
+                }
+                holder.bubble.setLayoutParams(lp);
+                holder.text.setText(msg.text);
+
+                if (msg.time != null && !msg.time.isEmpty()) {
+                    holder.time.setVisibility(View.VISIBLE);
+                    holder.time.setTextColor(0xFF006600);
+                    holder.time.setText(msg.time);
+                } else {
+                    holder.time.setVisibility(View.GONE);
+                }
+            } catch (Exception e) {
+                Log.w(TAG, "Failed to bind message at " + position, e);
             }
         }
 
@@ -250,6 +334,8 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        executor.shutdownNow();
+        if (executor != null) {
+            try { executor.shutdownNow(); } catch (Exception ignored) {}
+        }
     }
 }

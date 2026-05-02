@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/black" android:orientation="vertical">
+    <!-- Header with back button -->
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
         android:padding="16dp" android:background="@color/bg_surface" android:gravity="center_vertical">
+        <TextView android:id="@+id/notesBackBtn" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="&lt; BACK" android:textSize="14sp" android:textColor="@color/matrix_green"
+            android:fontFamily="monospace" android:paddingEnd="16dp"/>
         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
             android:text="[ ] DATA LOGS" android:textSize="18sp" android:textColor="@color/matrix_green"
             android:fontFamily="monospace" android:textStyle="bold"/>
@@ -10,8 +14,14 @@
             android:textSize="10sp" android:textColor="@color/text_hint" android:fontFamily="monospace"/>
     </LinearLayout>
     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider"/>
+    <!-- Empty state -->
+    <TextView android:id="@+id/notesEmptyState" android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1" android:text="[ NO RECORDS FOUND ]\n\nTap + NEW LOG ENTRY to create your first log."
+        android:textSize="14sp" android:textColor="@color/text_hint" android:fontFamily="monospace"
+        android:gravity="center" android:padding="32dp" android:visibility="gone"/>
     <androidx.recyclerview.widget.RecyclerView android:id="@+id/notesRecyclerView" android:layout_width="match_parent"
         android:layout_height="0dp" android:layout_weight="1" android:padding="12dp" android:clipToPadding="false"/>
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider"/>
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="12dp" android:background="@color/bg_surface">
         <Button android:id="@+id/notesNewBtn" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:text="+ NEW LOG ENTRY" android:textColor="@color/black" android:backgroundTint="@color/matrix_green"
