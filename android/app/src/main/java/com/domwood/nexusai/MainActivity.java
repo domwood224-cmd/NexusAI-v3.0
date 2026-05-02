@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
             File storageDir = ExternalStorageManager.getAppExternalDirectory(this);
             if (storageDir != null) {
                 ExternalStorageManager.saveTextFile(storageDir, "nexusai_app_data.txt",
-                    "NexusAI v5.0 initialized on "
+                    "NexusAI v6.2 initialized on "
                     + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(new Date()) + "\n");
             }
         } catch (Exception e) {
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                         + " (API " + Build.VERSION.SDK_INT + ")\n"
                         + "> Device: " + Build.MODEL + "\n"
                         + "> Kernel: " + System.getProperty("os.version", "N/A") + "\n"
-                        + "> Build: v5.0.0 [2026-05-02]\n"
+                        + "> Build: v6.2.0 [2026-05-02]\n"
                         + "> Status: ALL SYSTEMS NOMINAL"
                 );
             }

@@ -98,7 +98,7 @@ public class ChatActivity extends AppCompatActivity {
 
             if (adapter != null && adapter.getItemCount() == 0) {
                 adapter.addMessage(new ChatMessage("SYSTEM",
-                    "NEXUS AI NEURAL INTERFACE v5.0\n[SYSTEM ONLINE]\n\nConfigure API endpoint in System Config\nto initialize neural link.",
+                    "NEXUS AI NEURAL INTERFACE v6.2\n[SYSTEM ONLINE]\n\nConfigure API endpoint in System Config\nto initialize neural link.",
                     "ai"));
             }
         } catch (Exception e) {

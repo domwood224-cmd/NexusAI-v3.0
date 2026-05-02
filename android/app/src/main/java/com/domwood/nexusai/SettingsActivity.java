@@ -77,7 +77,7 @@ public class SettingsActivity extends AppCompatActivity {
             });
         }
 
-        String info = "> NexusAI v4.0.0 [BUILD-2026]\n" +
+        String info = "> NexusAI v6.2.0 [BUILD-2026]\n" +
             "> Android: " + Build.VERSION.RELEASE + " (API " + Build.VERSION.SDK_INT + ")\n" +
             "> Device: " + Build.MANUFACTURER + " " + Build.MODEL + "\n" +
             "> Kernel: " + System.getProperty("os.version", "N/A") + "\n" +
