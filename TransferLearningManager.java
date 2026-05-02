@@ -1,4 +1,4 @@
-package com.nexusai.assistant.ai.advanced;
+package com.domwood.nexusai.ai.advanced;
 
 import android.content.Context;
 import android.util.Log;
