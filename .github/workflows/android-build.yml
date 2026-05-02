@@ -148,19 +148,17 @@ jobs:
         run: |
           APK=$(find android/app/build/outputs/apk/release/ -name "*.apk" 2>/dev/null | head -1)
           APK_NAME=$(basename "$APK")
-          TAG="v5.2.0"
+          TAG="v5.3.0"
           gh release delete "$TAG" 2>/dev/null || true
           gh release create "$TAG" "$APK" \
-            --title "NexusAI v5.2.0" \
-            --notes "NexusAI v5.2.0 - Manifest fix + stability improvements
+            --title "NexusAI v5.3.0" \
+            --notes "NexusAI v5.3.0 - Critical XML inflation crash fix
 
           Changes:
-          - Fixed AndroidManifest activity name mismatches
-          - Fixed XML resource inflation crashes
-          - Fixed circular style references
-          - Fixed foreground attribute conflicts
-          - Hardened custom views (MatrixRain, NeuralNetwork)
-          - Global crash handler with device diagnostics
+          - Fixed Binary XML file line 40 InflateException
+          - Moved all inline hex colors to resource references
+          - Removed conflicting standalone cardview dependency
+          - Removed problematic app:rippleColor inline colors
           - All 5 screens: Dashboard, AI Chat, Neural Network, Data Logs, Settings
 
           Install: Download the APK below and install on your Android device." \

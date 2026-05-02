@@ -1,60 +1,190 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/black">
-    <com.domwood.nexusai.views.MatrixRainView android:id="@+id/neuralRain"
-        android:layout_width="match_parent" android:layout_height="match_parent"/>
-    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical">
-        <!-- Header with back button -->
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"
-            android:padding="16dp" android:background="#AA000000">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-                <TextView android:id="@+id/neuralBackBtn" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="&lt; BACK" android:textSize="14sp" android:textColor="@color/matrix_green"
-                    android:fontFamily="monospace" android:paddingEnd="16dp"/>
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-                    android:text="(*) NEURAL NETWORK" android:textSize="18sp" android:textColor="@color/matrix_green"
-                    android:fontFamily="monospace" android:textStyle="bold"/>
-                <TextView android:text="[ACTIVE]" android:textSize="10sp" android:textColor="@color/matrix_green_dim" android:fontFamily="monospace"/>
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <com.domwood.nexusai.views.MatrixRainView
+        android:id="@+id/neuralRain"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@color/overlay_dark">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/neuralBackBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="&lt; BACK"
+                    android:textSize="14sp"
+                    android:textColor="@color/matrix_green"
+                    android:fontFamily="monospace"
+                    android:paddingEnd="16dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="(*) NEURAL NETWORK"
+                    android:textSize="18sp"
+                    android:textColor="@color/matrix_green"
+                    android:fontFamily="monospace"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:text="[ACTIVE]"
+                    android:textSize="10sp"
+                    android:textColor="@color/matrix_green_dim"
+                    android:fontFamily="monospace" />
+
             </LinearLayout>
-            <TextView android:text="KNOWLEDGE GRAPH TOPOLOGY" android:textSize="10sp" android:textColor="@color/text_hint"
-                android:fontFamily="monospace" android:letterSpacing="0.15" android:layout_marginTop="4dp"/>
+
+            <TextView
+                android:text="KNOWLEDGE GRAPH TOPOLOGY"
+                android:textSize="10sp"
+                android:textColor="@color/text_hint"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.15"
+                android:layout_marginTop="4dp" />
+
         </LinearLayout>
-        <!-- Stats bar -->
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
-            android:padding="12dp" android:background="#88000000">
-            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-                android:orientation="vertical" android:gravity="center" android:padding="8dp">
-                <TextView android:id="@+id/neuralNodeCount" android:text="12" android:textSize="24sp"
-                    android:textColor="@color/matrix_green" android:fontFamily="monospace" android:textStyle="bold"/>
-                <TextView android:text="NODES" android:textSize="9sp" android:textColor="@color/text_hint" android:fontFamily="monospace"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="12dp"
+            android:background="@color/overlay_medium">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/neuralNodeCount"
+                    android:text="12"
+                    android:textSize="24sp"
+                    android:textColor="@color/matrix_green"
+                    android:fontFamily="monospace"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:text="NODES"
+                    android:textSize="9sp"
+                    android:textColor="@color/text_hint"
+                    android:fontFamily="monospace" />
+
             </LinearLayout>
-            <View android:layout_width="1dp" android:layout_height="40dp" android:background="@color/divider"/>
-            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-                android:orientation="vertical" android:gravity="center" android:padding="8dp">
-                <TextView android:id="@+id/neuralLinkCount" android:text="24" android:textSize="24sp"
-                    android:textColor="@color/biohazard_orange" android:fontFamily="monospace" android:textStyle="bold"/>
-                <TextView android:text="LINKS" android:textSize="9sp" android:textColor="@color/text_hint" android:fontFamily="monospace"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="40dp"
+                android:background="@color/divider" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/neuralLinkCount"
+                    android:text="24"
+                    android:textSize="24sp"
+                    android:textColor="@color/biohazard_orange"
+                    android:fontFamily="monospace"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:text="LINKS"
+                    android:textSize="9sp"
+                    android:textColor="@color/text_hint"
+                    android:fontFamily="monospace" />
+
             </LinearLayout>
-            <View android:layout_width="1dp" android:layout_height="40dp" android:background="@color/divider"/>
-            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-                android:orientation="vertical" android:gravity="center" android:padding="8dp">
-                <TextView android:id="@+id/neuralLayerCount" android:text="5" android:textSize="24sp"
-                    android:textColor="@color/biohazard_red" android:fontFamily="monospace" android:textStyle="bold"/>
-                <TextView android:text="LAYERS" android:textSize="9sp" android:textColor="@color/text_hint" android:fontFamily="monospace"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="40dp"
+                android:background="@color/divider" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/neuralLayerCount"
+                    android:text="5"
+                    android:textSize="24sp"
+                    android:textColor="@color/biohazard_red"
+                    android:fontFamily="monospace"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:text="LAYERS"
+                    android:textSize="9sp"
+                    android:textColor="@color/text_hint"
+                    android:fontFamily="monospace" />
+
             </LinearLayout>
         </LinearLayout>
-        <!-- Neural canvas -->
-        <com.domwood.nexusai.views.NeuralNetworkView android:id="@+id/neuralCanvas"
-            android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"/>
-        <!-- Activity bar -->
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp"
-            android:background="#AA000000" android:orientation="vertical">
-            <TextView android:text="ACTIVITY LEVEL" android:textSize="9sp" android:textColor="@color/text_hint"
-                android:fontFamily="monospace" android:letterSpacing="0.15"/>
-            <ProgressBar android:id="@+id/activityBar" style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="match_parent" android:layout_height="6dp" android:layout_marginTop="8dp"
-                android:progressTint="@color/matrix_green" android:progressBackgroundTint="@color/matrix_green_faint"
-                android:max="100" android:progress="73"/>
+
+        <com.domwood.nexusai.views.NeuralNetworkView
+            android:id="@+id/neuralCanvas"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:background="@color/overlay_dark"
+            android:orientation="vertical">
+
+            <TextView
+                android:text="ACTIVITY LEVEL"
+                android:textSize="9sp"
+                android:textColor="@color/text_hint"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.15" />
+
+            <ProgressBar
+                android:id="@+id/activityBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:layout_marginTop="8dp"
+                android:progressTint="@color/matrix_green"
+                android:progressBackgroundTint="@color/matrix_green_faint"
+                android:max="100"
+                android:progress="73" />
+
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>
