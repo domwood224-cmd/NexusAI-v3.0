@@ -1,10 +1,7 @@
 package com.domwood.nexusai;
 
 import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
-
-import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,51 +11,43 @@ public class ExternalStorageManager {
     private static final String TAG = "NexusAI.Storage";
     private static final String ROOT_DIR_NAME = "NexusAI";
 
-    @Nullable
+    /**
+     * Returns the app-scoped external directory.
+     * Uses getExternalFilesDir which requires NO permissions on Android 10+.
+     * Falls back to internal storage if external is unavailable.
+     */
     public static File getAppExternalDirectory(Context context) {
-        File[] externalDirs = context.getExternalFilesDirs(null);
-        File fallback = null;
-
-        if (externalDirs != null) {
-            for (File dir : externalDirs) {
-                if (dir == null) {
-                    continue;
-                }
-
-                String state = Environment.getExternalStorageState(dir);
-                if (!Environment.MEDIA_MOUNTED.equals(state)) {
-                    continue;
-                }
-
-                if (Environment.isExternalStorageRemovable(dir)) {
-                    return getAppRootDirectory(dir);
-                }
-
-                if (fallback == null) {
-                    fallback = dir;
-                }
+        File externalDir = context.getExternalFilesDir(null);
+        if (externalDir != null) {
+            File root = new File(externalDir, ROOT_DIR_NAME);
+            if (!root.exists() && !root.mkdirs()) {
+                Log.w(TAG, "Could not create directory: " + root.getAbsolutePath());
+                // Fall through to internal storage
+            } else {
+                return root;
             }
         }
 
-        if (fallback != null) {
-            return getAppRootDirectory(fallback);
+        // Fallback to internal app storage (always available, no permissions needed)
+        File internalDir = new File(context.getFilesDir(), ROOT_DIR_NAME);
+        if (!internalDir.exists() && !internalDir.mkdirs()) {
+            Log.e(TAG, "Could not create internal directory: " + internalDir.getAbsolutePath());
+            return context.getFilesDir();
         }
-
-        return null;
-    }
-
-    private static File getAppRootDirectory(File externalFilesDir) {
-        File root = new File(externalFilesDir, ROOT_DIR_NAME);
-        if (!root.exists() && !root.mkdirs()) {
-            Log.w(TAG, "Could not create external app storage directory: " + root.getAbsolutePath());
-        }
-        return root;
+        return internalDir;
     }
 
     public static boolean saveTextFile(File directory, String filename, String content) {
-        if (directory == null || !directory.exists()) {
-            Log.w(TAG, "External directory is not available for saving.");
+        if (directory == null) {
+            Log.w(TAG, "Directory is null.");
             return false;
+        }
+
+        if (!directory.exists()) {
+            if (!directory.mkdirs()) {
+                Log.e(TAG, "Failed to create directory: " + directory.getAbsolutePath());
+                return false;
+            }
         }
 
         File file = new File(directory, filename);
@@ -68,7 +57,7 @@ public class ExternalStorageManager {
             Log.i(TAG, "Saved file to " + file.getAbsolutePath());
             return true;
         } catch (IOException e) {
-            Log.e(TAG, "Failed to save file to external storage.", e);
+            Log.e(TAG, "Failed to save file: " + file.getAbsolutePath(), e);
             return false;
         }
     }
