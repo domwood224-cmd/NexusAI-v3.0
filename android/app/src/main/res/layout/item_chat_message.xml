@@ -3,7 +3,7 @@
     android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="4dp">
     <LinearLayout android:id="@+id/messageBubble" android:layout_width="match_parent"
         android:layout_height="wrap_content" android:orientation="vertical"
-        android:padding="12dp" android:background="@color/bg_card">
+        android:padding="12dp" android:background="@drawable/bg_ai_bubble">
         <TextView android:id="@+id/messageSender" android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:textSize="10sp" android:fontFamily="monospace" android:textStyle="bold" android:layout_marginBottom="4dp"/>
         <TextView android:id="@+id/messageText" android:layout_width="wrap_content" android:layout_height="wrap_content"

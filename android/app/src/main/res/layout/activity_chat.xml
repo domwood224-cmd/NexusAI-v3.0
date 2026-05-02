@@ -22,8 +22,8 @@
         <EditText android:id="@+id/chatInput" android:layout_width="0dp" android:layout_height="wrap_content"
             android:layout_weight="1" android:hint="> Enter query..." android:textColorHint="@color/text_hint"
             android:textColor="@color/matrix_green" android:background="@color/bg_input" android:padding="14dp"
-            android:textSize="14sp" android:fontFamily="monospace" android:inputType="textMultiLine"
-            android:maxLines="4" android:imeOptions="actionSend"/>
+            android:textSize="14sp" android:fontFamily="monospace" android:inputType="text"
+            android:maxLines="1" android:imeOptions="actionSend"/>
         <androidx.appcompat.widget.AppCompatButton android:id="@+id/chatSendBtn" android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text=">" android:textColor="@color/black" android:backgroundTint="@color/matrix_green"
             android:paddingLeft="20dp" android:paddingRight="20dp" android:fontFamily="monospace" android:textSize="18sp" android:textStyle="bold"
