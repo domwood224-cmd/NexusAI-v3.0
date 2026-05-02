@@ -24,8 +24,9 @@
             android:textColor="@color/matrix_green" android:background="@color/bg_input" android:padding="14dp"
             android:textSize="14sp" android:fontFamily="monospace" android:inputType="textMultiLine"
             android:maxLines="4" android:imeOptions="actionSend"/>
-        <android.widget.Button android:id="@+id/chatSendBtn" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        <androidx.appcompat.widget.AppCompatButton android:id="@+id/chatSendBtn" android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text=">" android:textColor="@color/black" android:backgroundTint="@color/matrix_green"
-            android:paddingHorizontal="20dp" android:fontFamily="monospace" android:textSize="18sp" android:textStyle="bold"/>
+            android:paddingLeft="20dp" android:paddingRight="20dp" android:fontFamily="monospace" android:textSize="18sp" android:textStyle="bold"
+            android:minHeight="48dp"/>
     </LinearLayout>
 </LinearLayout>

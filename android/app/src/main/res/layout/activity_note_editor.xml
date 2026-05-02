@@ -3,16 +3,16 @@
     android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/black" android:orientation="vertical">
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
         android:padding="12dp" android:background="@color/bg_surface" android:gravity="center_vertical">
-        <android.widget.Button android:id="@+id/editorBackBtn" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        <androidx.appcompat.widget.AppCompatButton android:id="@+id/editorBackBtn" android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="&lt; BACK" android:textColor="@color/matrix_green" android:backgroundTint="@android:color/transparent"
-            android:fontFamily="monospace" android:textSize="12sp"/>
+            android:fontFamily="monospace" android:textSize="12sp" android:minHeight="48dp"/>
         <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1"/>
-        <android.widget.Button android:id="@+id/editorDeleteBtn" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        <androidx.appcompat.widget.AppCompatButton android:id="@+id/editorDeleteBtn" android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="PURGE" android:textColor="@color/biohazard_red" android:backgroundTint="@android:color/transparent"
-            android:fontFamily="monospace" android:textSize="12sp"/>
-        <android.widget.Button android:id="@+id/editorSaveBtn" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:fontFamily="monospace" android:textSize="12sp" android:minHeight="48dp"/>
+        <androidx.appcompat.widget.AppCompatButton android:id="@+id/editorSaveBtn" android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="COMMIT" android:textColor="@color/black" android:backgroundTint="@color/matrix_green"
-            android:fontFamily="monospace" android:textSize="12sp" android:textStyle="bold" android:layout_marginStart="8dp"/>
+            android:fontFamily="monospace" android:textSize="12sp" android:textStyle="bold" android:layout_marginStart="8dp" android:minHeight="48dp"/>
     </LinearLayout>
     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider"/>
     <EditText android:id="@+id/editorTitle" android:layout_width="match_parent" android:layout_height="wrap_content"
