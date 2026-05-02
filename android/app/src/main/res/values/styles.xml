@@ -20,10 +20,4 @@
         <item name="backgroundTint">@color/matrix_green</item>
         <item name="cornerRadius">8dp</item>
     </style>
-    <style name="MatrixInput" parent="Widget.MaterialComponents.TextInputLayout">
-        <item name="android:textColorHint">@color/text_hint</item>
-        <item name="hintTextColor">@color/matrix_green</item>
-        <item name="boxStrokeColor">@color/matrix_green</item>
-        <item name="boxBackgroundColor">@color/bg_input</item>
-    </style>
 </resources>
