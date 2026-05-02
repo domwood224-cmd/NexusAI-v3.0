@@ -1,9 +1,9 @@
-package com.nexusai.assistant.ai.advanced;
+package com.domwood.nexusai.ai.advanced;
 
 import android.content.Context;
 import android.util.Log;
-import com.nexusai.assistant.ai.AICore;
-import com.nexusai.assistant.memory.MemoryManager;
+import com.domwood.nexusai.ai.AICore;
+import com.domwood.nexusai.memory.MemoryManager;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
