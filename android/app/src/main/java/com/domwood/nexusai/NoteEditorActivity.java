@@ -51,7 +51,7 @@ public class NoteEditorActivity extends AppCompatActivity {
         if (deleteBtn != null) {
             deleteBtn.setOnClickListener(v -> {
                 if (noteId < 0) return;
-                new AlertDialog.Builder(this, R.style.Theme_NexusAI_Dialog)
+                new AlertDialog.Builder(this)
                     .setTitle("PURGE RECORD")
                     .setMessage("This action cannot be reversed. Proceed?")
                     .setPositiveButton("PURGE", (d, w) -> {
