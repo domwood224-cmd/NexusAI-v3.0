@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,7 +44,6 @@ public class NotesActivity extends AppCompatActivity {
 
         notePrefs = getSharedPreferences("nexusai_notes", Context.MODE_PRIVATE);
 
-        // Back button
         View backArea = findViewById(R.id.notesBackBtn);
         if (backArea != null) {
             backArea.setOnClickListener(v -> finish());
@@ -53,12 +51,13 @@ public class NotesActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.notesRecyclerView);
         emptyState = findViewById(R.id.notesEmptyState);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        adapter = new NoteAdapter(loadNotes());
-        recyclerView.setAdapter(adapter);
-        updateCount();
-        updateEmptyState();
+        if (recyclerView != null) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            adapter = new NoteAdapter(loadNotes());
+            recyclerView.setAdapter(adapter);
+            updateCount();
+            updateEmptyState();
+        }
 
         View newBtn = findViewById(R.id.notesNewBtn);
         if (newBtn != null) {
@@ -73,12 +72,14 @@ public class NotesActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (adapter == null) return;
         adapter.setNotes(loadNotes());
         updateCount();
         updateEmptyState();
     }
 
     private void updateCount() {
+        if (adapter == null) return;
         TextView count = findViewById(R.id.notesCount);
         if (count != null) {
             count.setText("[" + adapter.getItemCount() + " RECORDS]");
@@ -86,7 +87,7 @@ public class NotesActivity extends AppCompatActivity {
     }
 
     private void updateEmptyState() {
-        if (emptyState != null) {
+        if (emptyState != null && adapter != null) {
             emptyState.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
         }
     }
@@ -134,12 +135,18 @@ public class NotesActivity extends AppCompatActivity {
         public void onBindViewHolder(ViewHolder h, int pos) {
             try {
                 Note note = notes.get(pos);
-                h.title.setText(note.title.isEmpty() ? "[UNTITLED]" : note.title);
-                h.date.setText(note.date);
-                if (note.content.isEmpty()) {
-                    h.preview.setText("[EMPTY]");
-                } else {
-                    h.preview.setText(note.content.substring(0, Math.min(note.content.length(), 100)));
+                if (h.title != null) {
+                    h.title.setText(note.title.isEmpty() ? "[UNTITLED]" : note.title);
+                }
+                if (h.date != null) {
+                    h.date.setText(note.date);
+                }
+                if (h.preview != null) {
+                    if (note.content.isEmpty()) {
+                        h.preview.setText("[EMPTY]");
+                    } else {
+                        h.preview.setText(note.content.substring(0, Math.min(note.content.length(), 100)));
+                    }
                 }
                 h.itemView.setOnClickListener(v -> {
                     Intent i = new Intent(NotesActivity.this, NoteEditorActivity.class);

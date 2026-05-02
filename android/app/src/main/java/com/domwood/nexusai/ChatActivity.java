@@ -215,6 +215,7 @@ public class ChatActivity extends AppCompatActivity {
                 final String responseText = aiText;
                 String t = new SimpleDateFormat("HH:mm:ss", Locale.US).format(new Date());
                 runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) return;
                     if (adapter != null) {
                         adapter.addMessage(new ChatMessage("NEXUS", responseText, "ai", t));
                         if (recyclerView != null) {
@@ -229,6 +230,7 @@ public class ChatActivity extends AppCompatActivity {
                 final String errText = "[CONNECTION FAILED]\n"
                     + (e.getMessage() != null ? e.getMessage() : "Unknown error");
                 runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) return;
                     if (adapter != null) {
                         adapter.addMessage(new ChatMessage("SYSTEM", errText, "ai", t));
                         if (recyclerView != null) {
@@ -239,6 +241,7 @@ public class ChatActivity extends AppCompatActivity {
                 });
             } finally {
                 runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) return;
                     isSending = false;
                     if (chatSendBtn != null) {
                         chatSendBtn.setEnabled(true);
@@ -315,7 +318,7 @@ public class ChatActivity extends AppCompatActivity {
         private final List<ChatMessage> messages = new ArrayList<>();
 
         MessageAdapter(List<ChatMessage> msgs) { messages.addAll(msgs); }
-        List<ChatMessage> getMessages() { return messages; }
+        List<ChatMessage> getMessages() { return new ArrayList<>(messages); }
         void addMessage(ChatMessage m) {
             messages.add(m);
             notifyItemInserted(messages.size() - 1);

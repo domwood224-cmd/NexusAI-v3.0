@@ -3,8 +3,8 @@ package com.domwood.nexusai;
 import android.app.Application;
 import android.content.Context;
 import android.os.Build;
+import android.os.Process;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
@@ -28,7 +28,6 @@ public class NexusApp extends Application {
     }
 
     private void installCrashHandler() {
-        final Context ctx = this;
         defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
             Log.e(TAG, "=== UNCAUGHT EXCEPTION ===", throwable);
@@ -54,17 +53,11 @@ public class NexusApp extends Application {
                     .edit().putString("last_crash", sb.toString()).apply();
             } catch (Exception ignored) {}
 
-            try {
-                Toast.makeText(ctx,
-                    "Error: " + throwable.getClass().getSimpleName()
-                    + " - " + throwable.getMessage(),
-                    Toast.LENGTH_LONG).show();
-            } catch (Exception ignored) {}
-
             if (defaultHandler != null) {
                 defaultHandler.uncaughtException(thread, throwable);
             } else {
-                thread.stop();
+                Process.killProcess(Process.myPid());
+                System.exit(1);
             }
         });
     }

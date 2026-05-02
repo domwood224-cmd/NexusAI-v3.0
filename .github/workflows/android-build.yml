@@ -148,17 +148,19 @@ jobs:
         run: |
           APK=$(find android/app/build/outputs/apk/release/ -name "*.apk" 2>/dev/null | head -1)
           APK_NAME=$(basename "$APK")
-          TAG="v6.0.0"
+          TAG="v6.1.0"
           gh release delete "$TAG" 2>/dev/null || true
           gh release create "$TAG" "$APK" \
-            --title "NexusAI v6.0.0" \
-            --notes "NexusAI v6.0.0 - Complete XML Overhaul
+            --title "NexusAI v6.1.0" \
+            --notes "NexusAI v6.1.0 - Root Cause Fix
 
-          All MaterialCardView replaced with FrameLayout+drawable
-          All 8-digit hex colors removed
-          Simplified theme to AppCompat
-          Neural screen simplified (no double MatrixRainView)
-          Zero app: namespace attributes in layouts
+          Removed Material Components library entirely
+          All Button tags fully qualified as android.widget.Button
+          Fixed NotesActivity NPE in onResume
+          Fixed ChatActivity thread safety
+          Fixed NexusApp crash handler
+          Removed Toast from crash handler thread
+          Replaced deprecated Thread.stop with Process.killProcess
 
           Install: Download the APK below and install on your Android device." \
             --prerelease 2>&1 || echo "Release creation had issues, APK is still available as artifact"
