@@ -149,17 +149,18 @@ jobs:
           APK=$(find android/app/build/outputs/apk/release/ -name "*.apk" 2>/dev/null | head -1)
           APK_NAME=$(basename "$APK")
           TAG="v6.2.0"
+          cat > /tmp/release_notes.md << 'NOTES'
+          NexusAI v6.2.0 - AppCompatButton Fix
+          - Replaced all android.widget.Button with AppCompatButton across all layouts
+          - Fixed activity_main.xml: RTL margins, touch ripple feedback
+          - Fixed activity_chat.xml: proper backgroundTint support
+          - Fixed activity_notes.xml, activity_note_editor.xml, activity_settings.xml
+          - Added minHeight=48dp for proper touch targets
+          - Synced all version strings to v6.2.0
+          Install: Download the APK below and install on your Android device.
+          NOTES
           gh release delete "$TAG" 2>/dev/null || true
           gh release create "$TAG" "$APK" \
             --title "NexusAI v6.2.0" \
-            --notes "NexusAI v6.2.0 - AppCompatButton Fix
-
-- Replaced all android.widget.Button with androidx.appcompat.widget.AppCompatButton across all layouts
-- Fixed activity_chat.xml: proper backgroundTint support, explicit padding attributes
-- Fixed activity_notes.xml: AppCompatButton for proper tinting
-- Fixed activity_note_editor.xml: all 3 buttons updated
-- Fixed activity_settings.xml: all 3 buttons updated
-- Added minHeight=48dp for proper touch targets on all buttons
-
-Install: Download the APK below and install on your Android device." \
+            --notes-file /tmp/release_notes.md \
             --prerelease 2>&1 || echo "Release creation had issues, APK is still available as artifact"
