@@ -11,7 +11,7 @@
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="NEXUS AI"
                     android:textSize="36sp" android:textColor="@color/matrix_green" android:fontFamily="monospace" android:textStyle="bold"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="[ BIOHAZARD PROTOCOL v4.0 ]" android:textSize="12sp" android:textColor="@color/biohazard_red"
+                    android:text="[ BIOHAZARD PROTOCOL v5.0 ]" android:textSize="12sp" android:textColor="@color/biohazard_red"
                     android:fontFamily="monospace" android:letterSpacing="0.2" android:layout_marginTop="8dp"/>
                 <TextView android:id="@+id/systemStatus" android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="> SYSTEM ONLINE" android:textSize="10sp" android:textColor="@color/matrix_green_dim"
@@ -23,11 +23,12 @@
                     android:textSize="11sp" android:textColor="@color/biohazard_red" android:fontFamily="monospace"
                     android:textStyle="bold" android:letterSpacing="0.2" android:layout_marginBottom="12dp"/>
 
-                <androidx.cardview.widget.CardView android:id="@+id/cardChat" android:layout_width="match_parent"
+                <com.google.android.material.card.MaterialCardView android:id="@+id/cardChat" android:layout_width="match_parent"
                     android:layout_height="wrap_content" android:layout_marginBottom="12dp"
                     app:cardCornerRadius="12dp" app:cardElevation="0dp"
                     app:cardBackgroundColor="@color/bg_card"
                     app:strokeColor="@color/border_green" app:strokeWidth="1dp"
+                    android:clickable="true" android:focusable="true"
                     android:foreground="?attr/selectableItemBackground">
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
                         android:gravity="center_vertical" android:padding="16dp">
@@ -40,15 +41,16 @@
                             <TextView android:text="Connect to neural inference engine" android:textSize="12sp"
                                 android:textColor="@color/text_hint" android:fontFamily="monospace" android:layout_marginTop="4dp"/>
                         </LinearLayout>
-                        <TextView android:text=">" android:textColor="@color/matrix_green" android:textSize="18sp" android:fontFamily="monospace"/>
+                        <TextView android:text="&gt;" android:textColor="@color/matrix_green" android:textSize="18sp" android:fontFamily="monospace"/>
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                </com.google.android.material.card.MaterialCardView>
 
-                <androidx.cardview.widget.CardView android:id="@+id/cardNeural" android:layout_width="match_parent"
+                <com.google.android.material.card.MaterialCardView android:id="@+id/cardNeural" android:layout_width="match_parent"
                     android:layout_height="wrap_content" android:layout_marginBottom="12dp"
                     app:cardCornerRadius="12dp" app:cardElevation="0dp"
                     app:cardBackgroundColor="@color/bg_card"
                     app:strokeColor="@color/border_green" app:strokeWidth="1dp"
+                    android:clickable="true" android:focusable="true"
                     android:foreground="?attr/selectableItemBackground">
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
                         android:gravity="center_vertical" android:padding="16dp">
@@ -61,15 +63,16 @@
                             <TextView android:text="Visualize knowledge graph topology" android:textSize="12sp"
                                 android:textColor="@color/text_hint" android:fontFamily="monospace" android:layout_marginTop="4dp"/>
                         </LinearLayout>
-                        <TextView android:text=">" android:textColor="@color/matrix_green" android:textSize="18sp" android:fontFamily="monospace"/>
+                        <TextView android:text="&gt;" android:textColor="@color/matrix_green" android:textSize="18sp" android:fontFamily="monospace"/>
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                </com.google.android.material.card.MaterialCardView>
 
-                <androidx.cardview.widget.CardView android:id="@+id/cardNotes" android:layout_width="match_parent"
+                <com.google.android.material.card.MaterialCardView android:id="@+id/cardNotes" android:layout_width="match_parent"
                     android:layout_height="wrap_content" android:layout_marginBottom="12dp"
                     app:cardCornerRadius="12dp" app:cardElevation="0dp"
                     app:cardBackgroundColor="@color/bg_card"
                     app:strokeColor="@color/border_green" app:strokeWidth="1dp"
+                    android:clickable="true" android:focusable="true"
                     android:foreground="?attr/selectableItemBackground">
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
                         android:gravity="center_vertical" android:padding="16dp">
@@ -82,15 +85,16 @@
                             <TextView android:text="Encrypted memory storage banks" android:textSize="12sp"
                                 android:textColor="@color/text_hint" android:fontFamily="monospace" android:layout_marginTop="4dp"/>
                         </LinearLayout>
-                        <TextView android:text=">" android:textColor="@color/matrix_green" android:textSize="18sp" android:fontFamily="monospace"/>
+                        <TextView android:text="&gt;" android:textColor="@color/matrix_green" android:textSize="18sp" android:fontFamily="monospace"/>
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                </com.google.android.material.card.MaterialCardView>
 
-                <androidx.cardview.widget.CardView android:id="@+id/cardSettings" android:layout_width="match_parent"
+                <com.google.android.material.card.MaterialCardView android:id="@+id/cardSettings" android:layout_width="match_parent"
                     android:layout_height="wrap_content" android:layout_marginBottom="12dp"
                     app:cardCornerRadius="12dp" app:cardElevation="0dp"
                     app:cardBackgroundColor="@color/bg_card"
                     app:strokeColor="@color/border_green" app:strokeWidth="1dp"
+                    android:clickable="true" android:focusable="true"
                     android:foreground="?attr/selectableItemBackground">
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
                         android:gravity="center_vertical" android:padding="16dp">
@@ -103,9 +107,9 @@
                             <TextView android:text="Core parameter configuration" android:textSize="12sp"
                                 android:textColor="@color/text_hint" android:fontFamily="monospace" android:layout_marginTop="4dp"/>
                         </LinearLayout>
-                        <TextView android:text=">" android:textColor="@color/matrix_green" android:textSize="18sp" android:fontFamily="monospace"/>
+                        <TextView android:text="&gt;" android:textColor="@color/matrix_green" android:textSize="18sp" android:fontFamily="monospace"/>
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                </com.google.android.material.card.MaterialCardView>
 
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider"/>
                 <TextView android:id="@+id/systemInfo" android:layout_width="match_parent" android:layout_height="wrap_content"

@@ -1,11 +1,12 @@
 package com.domwood.nexusai;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
-import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,16 +29,31 @@ public class MainActivity extends AppCompatActivity {
             setContentView(R.layout.activity_main);
         } catch (Exception e) {
             Log.e(TAG, "Failed to inflate main layout", e);
+            Toast.makeText(this, "Layout error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             finish();
             return;
         }
 
-        // Initialize storage (non-critical, don't crash if it fails)
+        // Check for previous crash
+        try {
+            SharedPreferences crashPrefs = getSharedPreferences("nexusai_crash", MODE_PRIVATE);
+            String lastCrash = crashPrefs.getString("last_crash", "");
+            if (lastCrash != null && !lastCrash.isEmpty()) {
+                Log.w(TAG, "Previous crash detected:\n" + lastCrash);
+                // Show first line of crash info
+                String firstLine = lastCrash.split("\n")[0];
+                Toast.makeText(this, "Previous crash: " + firstLine, Toast.LENGTH_LONG).show();
+                crashPrefs.edit().remove("last_crash").apply();
+            }
+        } catch (Exception ignored) {}
+
+        // Initialize storage (non-critical)
         try {
             File storageDir = ExternalStorageManager.getAppExternalDirectory(this);
             if (storageDir != null) {
                 ExternalStorageManager.saveTextFile(storageDir, "nexusai_app_data.txt",
-                    "NexusAI v4.0 initialized on " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(new Date()) + "\n");
+                    "NexusAI v5.0 initialized on "
+                    + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(new Date()) + "\n");
             }
         } catch (Exception e) {
             Log.w(TAG, "Storage init failed (non-critical)", e);
@@ -50,14 +66,26 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupCards() {
         try {
-            findViewById(R.id.cardChat).setOnClickListener(v ->
-                startActivity(new Intent(this, ChatActivity.class)));
-            findViewById(R.id.cardNeural).setOnClickListener(v ->
-                startActivity(new Intent(this, NeuralActivity.class)));
-            findViewById(R.id.cardNotes).setOnClickListener(v ->
-                startActivity(new Intent(this, NotesActivity.class)));
-            findViewById(R.id.cardSettings).setOnClickListener(v ->
-                startActivity(new Intent(this, SettingsActivity.class)));
+            android.view.View chatCard = findViewById(R.id.cardChat);
+            if (chatCard != null) {
+                chatCard.setOnClickListener(v ->
+                    startActivity(new Intent(this, ChatActivity.class)));
+            }
+            android.view.View neuralCard = findViewById(R.id.cardNeural);
+            if (neuralCard != null) {
+                neuralCard.setOnClickListener(v ->
+                    startActivity(new Intent(this, NeuralActivity.class)));
+            }
+            android.view.View notesCard = findViewById(R.id.cardNotes);
+            if (notesCard != null) {
+                notesCard.setOnClickListener(v ->
+                    startActivity(new Intent(this, NotesActivity.class)));
+            }
+            android.view.View settingsCard = findViewById(R.id.cardSettings);
+            if (settingsCard != null) {
+                settingsCard.setOnClickListener(v ->
+                    startActivity(new Intent(this, SettingsActivity.class)));
+            }
         } catch (Exception e) {
             Log.e(TAG, "Failed to setup card listeners", e);
         }
@@ -68,11 +96,12 @@ public class MainActivity extends AppCompatActivity {
             systemInfo = findViewById(R.id.systemInfo);
             if (systemInfo != null) {
                 systemInfo.setText(
-                    "> Android: " + Build.VERSION.RELEASE + " (API " + Build.VERSION.SDK_INT + ")\n" +
-                    "> Device: " + Build.MODEL + "\n" +
-                    "> Kernel: " + System.getProperty("os.version", "N/A") + "\n" +
-                    "> Build: v4.0.0 [2026-05-02]\n" +
-                    "> Status: ALL SYSTEMS NOMINAL"
+                    "> Android: " + Build.VERSION.RELEASE
+                        + " (API " + Build.VERSION.SDK_INT + ")\n"
+                        + "> Device: " + Build.MODEL + "\n"
+                        + "> Kernel: " + System.getProperty("os.version", "N/A") + "\n"
+                        + "> Build: v5.0.0 [2026-05-02]\n"
+                        + "> Status: ALL SYSTEMS NOMINAL"
                 );
             }
         } catch (Exception e) {
@@ -88,9 +117,12 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
                     runOnUiThread(() -> {
                         try {
-                            String time = new SimpleDateFormat("HH:mm:ss", Locale.US).format(new Date());
+                            String time = new SimpleDateFormat("HH:mm:ss", Locale.US)
+                                .format(new Date());
                             TextView status = findViewById(R.id.systemStatus);
-                            if (status != null) status.setText("> SYSTEM ONLINE " + time);
+                            if (status != null) {
+                                status.setText("> SYSTEM ONLINE " + time);
+                            }
                         } catch (Exception ignored) {}
                     });
                 }
@@ -105,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         if (clockTimer != null) {
             try { clockTimer.cancel(); } catch (Exception ignored) {}
+            clockTimer = null;
         }
     }
 }

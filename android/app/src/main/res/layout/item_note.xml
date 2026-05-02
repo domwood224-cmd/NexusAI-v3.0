@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent" android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
@@ -19,4 +19,4 @@
             android:textSize="12sp" android:textColor="@color/text_hint" android:fontFamily="monospace"
             android:maxLines="2" android:ellipsize="end" android:layout_marginTop="6dp"/>
     </LinearLayout>
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>
