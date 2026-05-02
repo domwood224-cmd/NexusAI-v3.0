@@ -16,15 +16,15 @@
     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider"/>
     <!-- Empty state -->
     <TextView android:id="@+id/notesEmptyState" android:layout_width="match_parent" android:layout_height="0dp"
-        android:layout_weight="1" android:text="[ NO RECORDS FOUND ]\n\nTap + NEW LOG ENTRY to create your first log."
+        android:layout_weight="1" android:text="[ NO RECORDS FOUND ]&#10;&#10;Tap + NEW LOG ENTRY to create your first log."
         android:textSize="14sp" android:textColor="@color/text_hint" android:fontFamily="monospace"
         android:gravity="center" android:padding="32dp" android:visibility="gone"/>
     <androidx.recyclerview.widget.RecyclerView android:id="@+id/notesRecyclerView" android:layout_width="match_parent"
         android:layout_height="0dp" android:layout_weight="1" android:padding="12dp" android:clipToPadding="false"/>
     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider"/>
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="12dp" android:background="@color/bg_surface">
-        <androidx.appcompat.widget.AppCompatButton android:id="@+id/notesNewBtn" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="+ NEW LOG ENTRY" android:textColor="@color/black" android:backgroundTint="@color/matrix_green"
-            android:fontFamily="monospace" android:textStyle="bold" android:minHeight="48dp"/>
+        <Button android:id="@+id/notesNewBtn" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="+ NEW LOG ENTRY" android:textColor="@color/black" android:background="@drawable/bg_btn_primary"
+            android:fontFamily="monospace" android:textStyle="bold" android:minHeight="48dp" android:textAllCaps="false"/>
     </LinearLayout>
 </LinearLayout>

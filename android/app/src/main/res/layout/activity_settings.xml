@@ -39,17 +39,20 @@
                 android:textColorHint="@color/text_hint" android:textColor="@color/matrix_green" android:background="@color/bg_input"
                 android:padding="14dp" android:textSize="13sp" android:fontFamily="monospace"
                 android:inputType="textMultiLine" android:minLines="3" android:maxLines="5" android:layout_marginBottom="16dp"/>
-            <androidx.appcompat.widget.AppCompatButton android:id="@+id/settingsSaveBtn" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="SAVE CONFIG" android:textColor="@color/black" android:backgroundTint="@color/matrix_green"
-                android:fontFamily="monospace" android:textStyle="bold" android:layout_marginBottom="24dp" android:minHeight="48dp"/>
+            <Button android:id="@+id/settingsSaveBtn" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="SAVE CONFIG" android:textColor="@color/black" android:background="@drawable/bg_btn_primary"
+                android:fontFamily="monospace" android:textStyle="bold" android:layout_marginBottom="24dp"
+                android:minHeight="48dp" android:textAllCaps="false"/>
             <TextView android:text="-- DATA MANAGEMENT --" android:textSize="11sp" android:textColor="@color/biohazard_red"
                 android:fontFamily="monospace" android:textStyle="bold" android:letterSpacing="0.2" android:layout_marginBottom="12dp"/>
-            <androidx.appcompat.widget.AppCompatButton android:id="@+id/settingsClearChatBtn" android:layout_width="match_parent" android:layout_height="wrap_content"
+            <Button android:id="@+id/settingsClearChatBtn" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:text="CLEAR CHAT HISTORY" android:textColor="@color/biohazard_red"
-                android:backgroundTint="@color/bg_card" android:fontFamily="monospace" android:layout_marginBottom="8dp" android:minHeight="48dp"/>
-            <androidx.appcompat.widget.AppCompatButton android:id="@+id/settingsClearNotesBtn" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:background="@drawable/bg_btn_danger" android:fontFamily="monospace"
+                android:layout_marginBottom="8dp" android:minHeight="48dp" android:textAllCaps="false"/>
+            <Button android:id="@+id/settingsClearNotesBtn" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:text="PURGE ALL LOGS" android:textColor="@color/biohazard_red"
-                android:backgroundTint="@color/bg_card" android:fontFamily="monospace" android:layout_marginBottom="24dp" android:minHeight="48dp"/>
+                android:background="@drawable/bg_btn_danger" android:fontFamily="monospace"
+                android:layout_marginBottom="24dp" android:minHeight="48dp" android:textAllCaps="false"/>
             <TextView android:id="@+id/settingsInfo" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:textSize="11sp" android:textColor="@color/text_hint" android:fontFamily="monospace"
                 android:lineSpacingExtra="4dp" android:paddingBottom="32dp"/>

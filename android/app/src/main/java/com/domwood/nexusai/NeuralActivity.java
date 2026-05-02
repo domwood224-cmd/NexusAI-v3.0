@@ -3,9 +3,8 @@ package com.domwood.nexusai;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ProgressBar;
+import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -56,12 +55,22 @@ public class NeuralActivity extends AppCompatActivity {
                         TextView nodeView = findViewById(R.id.neuralNodeCount);
                         TextView linkView = findViewById(R.id.neuralLinkCount);
                         TextView layerView = findViewById(R.id.neuralLayerCount);
-                        ProgressBar bar = findViewById(R.id.activityBar);
+                        View bar = findViewById(R.id.activityBar);
 
                         if (nodeView != null) nodeView.setText(String.valueOf(nodes));
                         if (linkView != null) linkView.setText(String.valueOf(links));
                         if (layerView != null) layerView.setText(String.valueOf(layers));
-                        if (bar != null) bar.setProgress(activity);
+                        if (bar != null) {
+                            ViewGroup.LayoutParams lp = bar.getLayoutParams();
+                            int parentWidth = bar.getParent() instanceof View
+                                ? ((View) bar.getParent()).getWidth() : 0;
+                            if (parentWidth > 0) {
+                                lp.width = (int) (parentWidth * activity / 100.0f);
+                            } else {
+                                lp.width = activity;
+                            }
+                            bar.setLayoutParams(lp);
+                        }
                     } catch (Exception ignored) {}
                 });
             }

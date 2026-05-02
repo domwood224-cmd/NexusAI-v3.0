@@ -148,13 +148,13 @@ jobs:
         run: |
           APK=$(find android/app/build/outputs/apk/release/ -name "*.apk" 2>/dev/null | head -1)
           APK_NAME=$(basename "$APK")
-          TAG="v6.4.0"
-          echo "NexusAI v6.4.0 - Complete Deep Dive Audit (32 files)" > /tmp/release_notes.md
-          echo "- Synced version strings across all 5 locations" >> /tmp/release_notes.md
-          echo "- Fixed chat inputType conflict (textMultiLine + Enter-to-send)" >> /tmp/release_notes.md
-          echo "- Fixed message bubble initial background (color -> drawable)" >> /tmp/release_notes.md
-          echo "- Fixed workflow YAML heredoc formatting" >> /tmp/release_notes.md
-          echo "- All crash vectors eliminated: AppCompat, no Material deps, 3-ctor views" >> /tmp/release_notes.md
+          TAG="v6.5.0"
+          echo "NexusAI v6.5.0 - Nuclear XML Overhaul" > /tmp/release_notes.md
+          echo "- Eliminated android:foreground on FrameLayout (OEM crash vector)" >> /tmp/release_notes.md
+          echo "- Replaced ALL AppCompatButton with plain Button + shape drawables" >> /tmp/release_notes.md
+          echo "- Replaced ProgressBar style attr with custom View-based bar" >> /tmp/release_notes.md
+          echo "- Created bg_card_ripple.xml with built-in touch feedback" >> /tmp/release_notes.md
+          echo "- Zero OEM-fragile attributes remaining" >> /tmp/release_notes.md
           echo "Install: Download the APK below and install on your Android device." >> /tmp/release_notes.md
           gh release delete "$TAG" 2>/dev/null || true
-          gh release create "$TAG" "$APK" --title "NexusAI v6.4.0" --notes-file /tmp/release_notes.md --prerelease 2>&1 || echo "Release creation had issues, APK is still available as artifact"
+          gh release create "$TAG" "$APK" --title "NexusAI v6.5.0" --notes-file /tmp/release_notes.md --prerelease 2>&1 || echo "Release creation had issues, APK is still available as artifact"
