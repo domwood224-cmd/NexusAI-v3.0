@@ -8,7 +8,7 @@ def keyAliasVal = System.getenv("KEY_ALIAS")
 def keyPass = System.getenv("KEY_PASSWORD")
 
 android {
-    namespace "com.nexusai.assistant"
+    namespace "com.domwood.nexusai"
     compileSdk 33
 
     signingConfigs {
@@ -23,11 +23,11 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.nexusai.assistant"
+        applicationId "com.domwood.nexusai"
         minSdk 24
         targetSdk 33
         versionCode 1
-        versionName "1.0"
+        versionName "3.0.0"
     }
 
     buildTypes {
