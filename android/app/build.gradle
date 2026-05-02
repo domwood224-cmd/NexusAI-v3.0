@@ -9,7 +9,7 @@ def keyPass = System.getenv("KEY_PASSWORD")
 
 android {
     namespace "com.domwood.nexusai"
-    compileSdk 33
+    compileSdk 34
 
     signingConfigs {
         if (keystorePath != null) {
@@ -24,10 +24,10 @@ android {
 
     defaultConfig {
         applicationId "com.domwood.nexusai"
-        minSdk 24
-        targetSdk 33
-        versionCode 1
-        versionName "3.0.0"
+        minSdk 26
+        targetSdk 34
+        versionCode 2
+        versionName "3.1.0"
     }
 
     buildTypes {
@@ -63,4 +63,8 @@ android {
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 }
