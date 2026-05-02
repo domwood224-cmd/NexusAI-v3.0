@@ -192,9 +192,10 @@ public class ChatActivity extends AppCompatActivity {
                     aiText = "[ERROR " + code + "] " + errBody;
                 }
 
+                final String responseText = aiText;
                 String t = new SimpleDateFormat("HH:mm:ss", Locale.US).format(new Date());
                 runOnUiThread(() -> {
-                    adapter.addMessage(new ChatMessage("NEXUS", aiText, "ai", t));
+                    adapter.addMessage(new ChatMessage("NEXUS", responseText, "ai", t));
                     recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                     saveMessages();
                 });
